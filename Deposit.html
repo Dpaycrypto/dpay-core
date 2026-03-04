@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DPay | Deposit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #05070a; color: white; }
+        .bento-card { background: rgba(17, 24, 39, 0.6); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="p-6 pb-24">
+    <div class="flex items-center gap-4 mb-8">
+        <a href="index.html" class="w-10 h-10 bento-card rounded-full flex items-center justify-center text-blue-500">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <h2 class="text-xl font-black">Deposit Funds</h2>
+    </div>
+
+    <div class="space-y-6">
+        <div class="bento-card p-6 rounded-[2.5rem]">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Bank Transfer</p>
+            <div class="space-y-2 text-sm">
+                <p class="text-slate-400">Bank Name: <span class="text-white font-bold ml-2">Kuda Bank</span></p>
+                <p class="text-slate-400">Account No: <span class="text-white font-bold ml-2">1234567890</span></p>
+                <p class="text-slate-400">Account Name: <span class="text-white font-bold ml-2">DPAY EXCHANGE</span></p>
+            </div>
+            <button onclick="alert('Account Number Copied!')" class="w-full bg-blue-600 mt-6 py-4 rounded-2xl font-black text-xs">COPY ACCOUNT</button>
+        </div>
+
+        <div class="bento-card p-6 rounded-[2.5rem]">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">USDT (TRC20)</p>
+            <code class="block bg-black/40 p-4 rounded-xl text-[10px] break-all text-blue-400 mb-4">
+                TR7NHqfj2CcWSc6u5CCvxzgMncGrBEvvZC
+            </code>
+            <button onclick="alert('Wallet Address Copied!')" class="w-full bg-white/5 py-4 rounded-2xl font-black text-xs border border-white/10">COPY ADDRESS</button>
+        </div>
+    </div>
+</body>
+</html>
