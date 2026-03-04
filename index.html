@@ -2,117 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DPay | Professional Exchange</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPay | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #05070a; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        .bento-card { background: rgba(17, 24, 39, 0.6); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
-        .nav-active { color: #3b82f6; }
-        .balance-gradient { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(59, 130, 246, 0.2); }
+        body { background-color: #05070a; color: white; font-family: sans-serif; }
+        .card-glass { background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .nav-btn:active { transform: scale(0.90); transition: 0.2s; }
     </style>
 </head>
-<body class="text-slate-200 pb-28">
+<body class="p-6 pb-24">
 
-    <div class="p-6 flex justify-between items-center sticky top-0 bg-[#05070a]/80 backdrop-blur-md z-50">
+    <div class="flex justify-between items-center mb-8">
         <div>
-            <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Available Balance</p>
-            <h2 class="text-xl font-black tracking-tight text-white">DPay User</h2>
+            <p class="text-slate-500 text-xs uppercase tracking-widest font-bold">Welcome back,</p>
+            <h1 class="text-2xl font-bold">DPay User</h1>
         </div>
-        <a href="signup.html" class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full flex items-center justify-center border-2 border-white/10 shadow-lg">
-            <i class="fas fa-user text-xs"></i>
-        </a>
+        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center border-2 border-blue-400/30">
+            <i class="fas fa-user"></i>
+        </div>
     </div>
 
-    <div class="px-6 space-y-6">
-        <div class="balance-gradient p-8 rounded-[2.5rem] relative overflow-hidden shadow-2xl">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/10 blur-3xl"></div>
-            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">Nigerian Naira Wallet</p>
-            <h1 class="text-4xl font-black text-white mt-2 text-center">₦250,000.00</h1>
-            
-            <div class="flex gap-4 mt-8">
-                <a href="deposit.html" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black text-xs text-center transition-all shadow-lg shadow-blue-600/20">
-                    DEPOSIT
-                </a>
-                <a href="withdraw.html" class="flex-1 bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl font-black text-xs text-center border border-white/10 transition-all">
-                    WITHDRAW
-                </a>
-            </div>
-        </div>
-
-        <h3 class="text-[10px] font-bold text-slate-500 px-2 uppercase tracking-[0.2em]">Exchange Hub</h3>
+    <div class="card-glass p-6 rounded-[2rem] mb-8 bg-gradient-to-br from-blue-600/20 to-transparent">
+        <p class="text-slate-400 text-sm mb-1">Total Balance</p>
+        <h2 class="text-4xl font-black mb-6">₦250,000.00</h2>
         
-        <div class="grid grid-cols-2 gap-4">
-            <a href="giftcards.html" class="bento-card p-6 rounded-[2rem] flex flex-col items-center text-center group active:scale-95 transition-transform">
-                <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 mb-4 group-hover:bg-purple-500/20 transition-colors">
-                    <i class="fas fa-gift text-2xl"></i>
-                </div>
-                <p class="font-bold text-sm text-white">Gift Cards</p>
-                <p class="text-[10px] text-slate-500 mt-1 uppercase font-medium">Sell Instantly</p>
+        <div class="flex gap-4">
+            <a href="deposit.html" class="flex-1 bg-blue-600 py-3 rounded-xl text-center text-sm font-bold shadow-lg shadow-blue-900/40 nav-btn">
+                <i class="fas fa-plus-circle mr-2"></i>Deposit
             </a>
-
-            <a href="wallet.html" class="bento-card p-6 rounded-[2rem] flex flex-col items-center text-center group active:scale-95 transition-transform">
-                <div class="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-400 mb-4 group-hover:bg-orange-500/20 transition-colors">
-                    <i class="fab fa-bitcoin text-2xl"></i>
-                </div>
-                <p class="font-bold text-sm text-white">Crypto</p>
-                <p id="btc-price" class="text-[10px] text-green-400 mt-1 font-bold">FETCHING...</p>
-            </a>
-
-            <a href="vtu.html" class="bento-card p-6 rounded-[2rem] flex flex-col items-center text-center group active:scale-95 transition-transform">
-                <div class="w-14 h-14 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-400 mb-4 group-hover:bg-green-500/20 transition-colors">
-                    <i class="fas fa-phone-alt text-2xl"></i>
-                </div>
-                <p class="font-bold text-sm text-white">Airtime</p>
-                <p class="text-[10px] text-slate-500 mt-1 uppercase font-medium">Sell Recharge</p>
-            </a>
-
-            <a href="vtu.html" class="bento-card p-6 rounded-[2rem] flex flex-col items-center text-center group active:scale-95 transition-transform">
-                <div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 mb-4 group-hover:bg-blue-500/20 transition-colors">
-                    <i class="fas fa-bolt text-2xl"></i>
-                </div>
-                <p class="font-bold text-sm text-white">Utility</p>
-                <p class="text-[10px] text-slate-500 mt-1 uppercase font-medium">Data & Bills</p>
+            <a href="withdraw.html" class="flex-1 bg-slate-800 py-3 rounded-xl text-center text-sm font-bold nav-btn">
+                <i class="fas fa-arrow-up mr-2"></i>Withdraw
             </a>
         </div>
+    </div>
 
-        <div class="bento-card p-6 rounded-3xl">
-            <div class="flex justify-between items-center mb-4">
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Recent Activity</p>
-                <i class="fas fa-history text-slate-600"></i>
+    <h3 class="text-sm font-bold mb-4 uppercase tracking-wider text-slate-500">Quick Services</h3>
+    <div class="grid grid-cols-4 gap-4 mb-8">
+        
+        <a href="vtu.html" class="flex flex-col items-center gap-2 nav-btn">
+            <div class="w-14 h-14 card-glass rounded-2xl flex items-center justify-center border-blue-500/30">
+                <i class="fas fa-mobile-alt text-blue-500 text-xl"></i>
             </div>
-            <p class="text-xs text-slate-500 text-center py-4">No recent transactions to show.</p>
+            <p class="text-[10px] font-bold">VTU</p>
+        </a>
+
+        <a href="giftcards.html" class="flex flex-col items-center gap-2 nav-btn">
+            <div class="w-14 h-14 card-glass rounded-2xl flex items-center justify-center border-purple-500/30">
+                <i class="fas fa-gift text-purple-500 text-xl"></i>
+            </div>
+            <p class="text-[10px] font-bold">Gift Card</p>
+        </a>
+
+        <a href="wallet.html" class="flex flex-col items-center gap-2 nav-btn">
+            <div class="w-14 h-14 card-glass rounded-2xl flex items-center justify-center border-green-500/30">
+                <i class="fas fa-wallet text-green-500 text-xl"></i>
+            </div>
+            <p class="text-[10px] font-bold">Wallet</p>
+        </a>
+
+        <a href="#" class="flex flex-col items-center gap-2 nav-btn">
+            <div class="w-14 h-14 card-glass rounded-2xl flex items-center justify-center border-orange-500/30">
+                <i class="fas fa-headset text-orange-500 text-xl"></i>
+            </div>
+            <p class="text-[10px] font-bold">Support</p>
+        </a>
+
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">Recent Activity</h3>
+        <p class="text-blue-500 text-xs font-bold">See All</p>
+    </div>
+
+    <div class="space-y-3">
+        <div class="card-glass p-4 rounded-2xl flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center text-green-500">
+                    <i class="fas fa-arrow-down text-xs"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold">Deposit Success</p>
+                    <p class="text-[10px] text-slate-500">Today, 10:45 AM</p>
+                </div>
+            </div>
+            <p class="text-xs font-bold text-green-500">+₦5,000</p>
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-[#05070a]/90 backdrop-blur-xl border-t border-white/5 px-10 py-5 flex justify-between items-center z-[100]">
-        <a href="index.html" class="flex flex-col items-center nav-active">
-            <i class="fas fa-home text-xl mb-1"></i>
-            <span class="text-[10px] font-bold">Home</span>
-        </a>
-        <a href="wallet.html" class="flex flex-col items-center text-slate-600 hover:text-blue-500 transition-colors">
-            <i class="fas fa-wallet text-xl mb-1"></i>
-            <span class="text-[10px] font-bold">Wallet</span>
-        </a>
-        <a href="vtu.html" class="flex flex-col items-center text-slate-600 hover:text-blue-500 transition-colors">
-            <i class="fas fa-bolt text-xl mb-1"></i>
-            <span class="text-[10px] font-bold">Services</span>
-        </a>
-    </div>
-
-    <script>
-        async function fetchPrices() {
-            try {
-                const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-                const data = await res.json();
-                document.getElementById('btc-price').innerText = "$" + data.bitcoin.usd.toLocaleString();
-            } catch (e) {
-                document.getElementById('btc-price').innerText = "LIVE RATES";
-            }
-        }
-        fetchPrices();
-        setInterval(fetchPrices, 30000);
-    </script>
 </body>
 </html>
