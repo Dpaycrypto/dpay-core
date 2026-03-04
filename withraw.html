@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DPay | Withdraw</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #05070a; color: white; }
+        .bento-card { background: rgba(17, 24, 39, 0.6); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="p-6">
+    <div class="flex items-center gap-4 mb-8">
+        <a href="index.html" class="w-10 h-10 bento-card rounded-full flex items-center justify-center text-blue-500">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <h2 class="text-xl font-black">Withdraw</h2>
+    </div>
+
+    <div class="bento-card p-6 rounded-[2.5rem]">
+        <form class="space-y-5">
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 block">Amount to Withdraw (₦)</label>
+                <input type="number" placeholder="Min 1,000" class="w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-sm font-bold focus:border-blue-500 outline-none transition">
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 block">Bank Details or Crypto Address</label>
+                <textarea rows="3" placeholder="Bank Name, Acc Number & Name" class="w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-sm font-bold focus:border-blue-500 outline-none transition"></textarea>
+            </div>
+            <button type="button" onclick="alert('Withdrawal Request Sent!')" class="w-full bg-blue-600 py-4 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20">
+                SUBMIT REQUEST
+            </button>
+        </form>
+    </div>
+</body>
+</html>
