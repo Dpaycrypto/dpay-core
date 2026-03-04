@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Loading...</title>
+    <title>DPay | Welcome</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -25,14 +25,13 @@
         <p class="text-blue-500 text-xs font-bold tracking-[0.3em] mt-2 uppercase">Secure Crypto</p>
     </div>
 
-    <div class="absolute bottom-12 flex flex-col items-center">
-        <div class="w-12 h-1 bg-slate-900 rounded-full overflow-hidden">
-            <div class="w-full h-full bg-blue-600 origin-left animate-[loading_2s_ease-in-out]"></div>
-        </div>
+    <div class="absolute bottom-12 w-32 h-1 bg-slate-900 rounded-full overflow-hidden">
+        <div class="w-full h-full bg-blue-600 origin-left animate-[loading_2.5s_ease-in-out]"></div>
     </div>
 
     <script>
-        // This script waits 2.5 seconds, then sends the user to the login page
+        // THIS IS THE REDIRECT CODE
+        // It waits 2.5 seconds, then sends the user to login.html
         setTimeout(() => {
             window.location.href = 'login.html';
         }, 2500);
