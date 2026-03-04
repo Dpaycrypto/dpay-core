@@ -3,51 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | VTU Services</title>
+    <title>DPay | Buy Airtime & Data</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #05070a; color: white; }
+        .card-glass { background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .network-btn { transition: all 0.3s ease; border: 2px solid transparent; }
+        .network-btn:active { border-color: #3b82f6; transform: scale(0.95); }
+    </style>
 </head>
-<body class="bg-[#0b0f1a] text-slate-200 font-sans">
+<body class="p-6 pb-24">
 
-    <nav class="flex items-center justify-between px-6 py-4 bg-[#111827]/80 backdrop-blur-md border-b border-slate-800">
-        <div class="text-2xl font-black tracking-tighter text-blue-500">DPay</div>
-        <div class="flex space-x-8 text-sm font-medium">
-            <a href="index.html" class="text-slate-400 hover:text-blue-400">Home</a>
-            <a href="wallet.html" class="text-slate-400 hover:text-blue-400">Exchange</a>
-            <a href="vtu.html" class="text-blue-400">VTU</a>
+    <div class="flex items-center gap-4 mb-8">
+        <a href="index.html" class="w-10 h-10 card-glass rounded-full flex items-center justify-center">
+            <i class="fas fa-chevron-left text-blue-500"></i>
+        </a>
+        <h1 class="text-2xl font-bold">Bill Payments</h1>
+    </div>
+
+    <p class="text-slate-400 text-sm mb-4 uppercase tracking-widest font-semibold">Select Network</p>
+    <div class="grid grid-cols-4 gap-3 mb-8">
+        <button class="network-btn card-glass p-3 rounded-xl flex flex-col items-center gap-2">
+            <div class="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-black font-bold text-xs text-center leading-none">MTN</div>
+        </button>
+        <button class="network-btn card-glass p-3 rounded-xl flex flex-col items-center gap-2">
+            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-xs text-center leading-none">Airtel</div>
+        </button>
+        <button class="network-btn card-glass p-3 rounded-xl flex flex-col items-center gap-2">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-xs text-center leading-none">GLO</div>
+        </button>
+        <button class="network-btn card-glass p-3 rounded-xl flex flex-col items-center gap-2">
+            <div class="w-10 h-10 bg-black border border-slate-700 rounded-full flex items-center justify-center text-yellow-500 font-bold text-[10px] text-center leading-none">9mobile</div>
+        </button>
+    </div>
+
+    <div class="space-y-6">
+        <div>
+            <label class="text-xs text-slate-500 mb-2 block uppercase">Phone Number</label>
+            <input type="number" placeholder="08012345678" class="w-full bg-slate-900 border border-slate-800 rounded-xl py-4 px-4 focus:outline-none focus:border-blue-500">
         </div>
-    </nav>
 
-    <div class="max-w-md mx-auto mt-12 p-6 bg-slate-900/50 rounded-3xl border border-slate-800 shadow-2xl">
-        <h2 class="text-2xl font-bold mb-6 text-center text-white"><i class="fas fa-mobile-alt mr-2 text-blue-500"></i> Buy Airtime & Data</h2>
-        
-        <form class="space-y-4">
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Select Network</label>
-                <select class="w-full bg-[#0b0f1a] border border-slate-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none">
-                    <option>MTN Nigeria</option>
-                    <option>Airtel Nigeria</option>
-                    <option>Glo World</option>
-                    <option>9Mobile</option>
-                </select>
+        <div>
+            <label class="text-xs text-slate-500 mb-2 block uppercase">Select Amount</label>
+            <div class="grid grid-cols-3 gap-2">
+                <button class="card-glass py-3 rounded-lg text-sm hover:bg-blue-600">₦100</button>
+                <button class="card-glass py-3 rounded-lg text-sm hover:bg-blue-600">₦500</button>
+                <button class="card-glass py-3 rounded-lg text-sm hover:bg-blue-600">₦1,000</button>
             </div>
+            <input type="number" placeholder="Or enter custom amount" class="w-full bg-slate-900 border border-slate-800 rounded-xl py-4 px-4 mt-3 focus:outline-none focus:border-blue-500">
+        </div>
 
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Phone Number</label>
-                <input type="tel" placeholder="08012345678" class="w-full bg-[#0b0f1a] border border-slate-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Amount (NGN)</label>
-                <input type="number" placeholder="500" class="w-full bg-[#0b0f1a] border border-slate-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none">
-            </div>
-
-            <button type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/40">
-                Purchase Now
-            </button>
-        </form>
-        
-        <p class="text-center text-slate-500 text-xs mt-6">Instant delivery to all Nigerian networks.</p>
+        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all">
+            PURCHASE AIRTIME
+        </button>
     </div>
 
 </body>
