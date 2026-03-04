@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPay | Wallets & Exchange</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-[#0b0f1a] text-slate-200">
+
+    <nav class="flex items-center justify-between px-6 py-4 bg-[#111827] border-b border-slate-800">
+        <div class="text-2xl font-black text-blue-500">D<span class="text-white">Pay</span></div>
+        <a href="index.html" class="text-sm text-slate-400 hover:text-white">← Dashboard</a>
+    </nav>
+
+    <div class="max-w-4xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <div class="bg-gradient-to-br from-blue-600 to-blue-800 p-8 rounded-3xl shadow-xl">
+            <h3 class="text-white/70 text-sm font-bold uppercase mb-2">Nigerian Naira Wallet</h3>
+            <p class="text-4xl font-black mb-6">₦250,000.00</p>
+            <div class="flex gap-3">
+                <button class="flex-1 bg-white text-blue-700 py-3 rounded-xl font-bold text-sm">Deposit</button>
+                <button class="flex-1 bg-blue-500 text-white py-3 rounded-xl font-bold text-sm">Withdraw</button>
+            </div>
+        </div>
+
+        <div class="bg-[#111827] p-8 rounded-3xl border border-slate-800">
+            <h3 class="text-xl font-bold mb-6">Quick Swap</h3>
+            <div class="space-y-4">
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                    <label class="block text-xs text-slate-500 mb-1">Sell BTC</label>
+                    <input type="number" placeholder="0.005" class="bg-transparent w-full outline-none text-xl font-bold">
+                </div>
+                <div class="flex justify-center -my-2 relative z-10">
+                    <div class="bg-blue-600 p-2 rounded-full border-4 border-[#111827]">
+                        <i class="fa-solid fa-arrow-down text-xs"></i>
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                    <label class="block text-xs text-slate-500 mb-1">Get Naira (Estimated)</label>
+                    <input type="text" value="₦45,200,000" disabled class="bg-transparent w-full outline-none text-xl font-bold text-emerald-400">
+                </div>
+                <button class="w-full bg-blue-600 py-4 rounded-2xl font-bold mt-4">Confirm Exchange</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
