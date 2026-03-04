@@ -1,52 +1,53 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Buy Airtime & Data</title>
+    <title>DPay | VTU Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-[#0b0f1a] text-slate-200">
+<body class="bg-[#0b0f1a] text-slate-200 font-sans">
 
-    <nav class="flex items-center justify-between px-6 py-4 bg-[#111827] border-b border-slate-800">
-        <div class="text-2xl font-black text-blue-500">D<span class="text-white">Pay</span></div>
-        <a href="index.html" class="text-sm text-slate-400 hover:text-white">← Back to Dashboard</a>
+    <nav class="flex items-center justify-between px-6 py-4 bg-[#111827]/80 backdrop-blur-md border-b border-slate-800">
+        <div class="text-2xl font-black tracking-tighter text-blue-500">DPay</div>
+        <div class="flex space-x-8 text-sm font-medium">
+            <a href="index.html" class="text-slate-400 hover:text-blue-400">Home</a>
+            <a href="wallet.html" class="text-slate-400 hover:text-blue-400">Exchange</a>
+            <a href="vtu.html" class="text-blue-400">VTU</a>
+        </div>
     </nav>
 
-    <div class="max-w-md mx-auto mt-12 p-6 bg-[#111827] rounded-3xl border border-slate-800">
-        <h2 class="text-2xl font-bold mb-6 text-center">VTU Services</h2>
+    <div class="max-w-md mx-auto mt-12 p-6 bg-slate-900/50 rounded-3xl border border-slate-800 shadow-2xl">
+        <h2 class="text-2xl font-bold mb-6 text-center text-white"><i class="fas fa-mobile-alt mr-2 text-blue-500"></i> Buy Airtime & Data</h2>
         
-        <div class="flex bg-slate-900 rounded-xl p-1 mb-8">
-            <button class="flex-1 py-2 bg-blue-600 rounded-lg font-bold text-sm">Airtime</button>
-            <button class="flex-1 py-2 text-slate-400 font-bold text-sm">Data</button>
-        </div>
-
         <form class="space-y-4">
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Select Network</label>
-                <select class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white outline-none focus:border-blue-500">
+                <select class="w-full bg-[#0b0f1a] border border-slate-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none">
                     <option>MTN Nigeria</option>
-                    <option>Airtel</option>
-                    <option>Glo</option>
-                    <option>9mobile</option>
+                    <option>Airtel Nigeria</option>
+                    <option>Glo World</option>
+                    <option>9Mobile</option>
                 </select>
             </div>
 
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Phone Number</label>
-                <input type="tel" placeholder="08012345678" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white outline-none focus:border-blue-500">
+                <input type="tel" placeholder="08012345678" class="w-full bg-[#0b0f1a] border border-slate-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none">
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Amount (₦)</label>
-                <input type="number" placeholder="500" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white outline-none focus:border-blue-500">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Amount (NGN)</label>
+                <input type="number" placeholder="500" class="w-full bg-[#0b0f1a] border border-slate-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none">
             </div>
 
-            <button type="button" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl mt-4 shadow-lg shadow-blue-900/20">
+            <button type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/40">
                 Purchase Now
             </button>
         </form>
+        
+        <p class="text-center text-slate-500 text-xs mt-6">Instant delivery to all Nigerian networks.</p>
     </div>
 
 </body>
