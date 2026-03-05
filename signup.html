@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Create Account</title>
+    <title>DPay | Join Now</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -19,8 +19,8 @@
             <i class="fas fa-arrow-left mr-2"></i> Back to Login
         </a>
 
-        <h1 class="text-4xl font-black tracking-tighter mb-2">Join <span class="text-blue-500">DPay.</span></h1>
-        <p class="text-slate-500 text-sm mb-10 font-medium">Create your secure crypto wallet in seconds.</p>
+        <h1 class="text-4xl font-black tracking-tighter mb-2 text-white">Join <span class="text-blue-500">DPay.</span></h1>
+        <p class="text-slate-500 text-sm mb-10 font-medium">Create your secure crypto account in seconds.</p>
 
         <div class="space-y-4">
             <div class="space-y-2">
@@ -46,7 +46,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Your specific keys from your screen
+        // VERIFIED CONFIG FROM YOUR SCREEN
         const firebaseConfig = {
             apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg",
             authDomain: "dpay-core-ec1e6.firebaseapp.com",
@@ -78,7 +78,7 @@
                 alert("Success! Check your Gmail for the verification link.");
                 window.location.href = "login.html";
             } catch (error) {
-                alert(error.message);
+                alert("Error: " + error.message);
                 btn.innerText = "CREATE ACCOUNT";
                 btn.disabled = false;
             }
