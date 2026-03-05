@@ -8,37 +8,82 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { background-color: #05070a; color: white; font-family: sans-serif; }
-        input:focus { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.1); }
+        .input-field { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
+        .input-field:focus { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
     </style>
 </head>
-<body class="p-8 flex flex-col min-h-screen justify-center">
+<body class="flex items-center justify-center min-h-screen p-6">
 
-    <div class="text-center mb-10">
-        <div class="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-blue-900/40">
-            <i class="fas fa-bolt text-4xl text-white"></i>
+    <div class="w-full max-w-md text-center">
+        <h1 class="text-4xl font-black tracking-tighter mb-2 italic">DPAY<span class="text-blue-500">.</span></h1>
+        <p class="text-slate-500 text-sm mb-10 font-medium">Welcome back, please login to your wallet.</p>
+
+        <div class="space-y-4 text-left">
+            <div class="space-y-2">
+                <label class="text-[10px] uppercase font-black text-slate-500 ml-1">Email Address</label>
+                <input type="email" id="login-email" placeholder="name@gmail.com" 
+                    class="input-field w-full py-4 px-5 rounded-2xl outline-none text-sm text-white">
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] uppercase font-black text-slate-500 ml-1">Password</label>
+                <input type="password" id="login-password" placeholder="••••••••" 
+                    class="input-field w-full py-4 px-5 rounded-2xl outline-none text-sm text-white">
+            </div>
+
+            <button onclick="handleLogin()" id="login-btn"
+                class="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95 mt-4">
+                Sign In
+            </button>
         </div>
-        <h1 class="text-3xl font-black tracking-tighter">Welcome Back</h1>
+
+        <p class="mt-8 text-sm text-slate-500">
+            Don't have an account? <a href="signup.html" class="text-blue-500 font-bold">Register</a>
+        </p>
     </div>
 
-    <div class="space-y-6">
-        <div>
-            <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 block">Email Address</label>
-            <input type="email" placeholder="name@example.com" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-5 focus:outline-none transition-all">
-        </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        <div>
-            <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 block">Password</label>
-            <input type="password" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-5 focus:outline-none transition-all">
-        </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg",
+            authDomain: "dpay-core-ec1e6.firebaseapp.com",
+            projectId: "dpay-core-ec1e6",
+            storageBucket: "dpay-core-ec1e6.firebasestorage.app",
+            messagingSenderId: "259076281817",
+            appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8"
+        };
 
-        <a href="dashboard.html" class="block w-full bg-blue-600 text-white text-center font-black py-5 rounded-2xl shadow-xl shadow-blue-900/30 active:scale-95 transition-all">
-            SIGN IN
-        </a>
-    </div>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-    <p class="text-center mt-10 text-sm text-slate-500">
-        Don't have an account? <a href="signup.html" class="text-blue-500 font-bold">Join DPay</a>
-    </p>
+        window.handleLogin = async () => {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
 
+            btn.innerText = "AUTHENTICATING...";
+            btn.disabled = true;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // SECURITY CHECK: Is the email verified?
+                if (user.emailVerified) {
+                    window.location.href = "dashboard.html"; 
+                } else {
+                    alert("Please verify your email! Check your Gmail inbox for the link we sent.");
+                    btn.innerText = "SIGN IN";
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                alert("Login Failed: " + error.message);
+                btn.innerText = "SIGN IN";
+                btn.disabled = false;
+            }
+        };
+    </script>
 </body>
 </html>
