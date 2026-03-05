@@ -1,115 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Secure Wallet</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPay | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body { background-color: #020408; color: white; font-family: 'Inter', sans-serif; }
-        .glass-card { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
-        .action-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; }
-        .action-btn:hover { background: rgba(59, 130, 246, 0.1); border-color: #3b82f6; }
-    </style>
 </head>
-<body class="min-h-screen pb-24">
-
-    <nav class="p-6 flex justify-between items-center max-w-lg mx-auto">
-        <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <i class="fas fa-bolt text-sm"></i>
-            </div>
-            <h1 class="text-xl font-bold tracking-tighter italic">DPAY</h1>
-        </div>
-        <button onclick="handleLogout()" class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-red-400 transition-colors">
-            Sign Out <i class="fas fa-sign-out-alt ml-1"></i>
-        </button>
+<body class="bg-[#020408] text-white p-6">
+    <nav class="flex justify-between items-center max-w-lg mx-auto mb-10">
+        <h1 class="text-xl font-bold italic">DPAY</h1>
+        <button onclick="logout()" class="text-[10px] text-slate-500 font-black uppercase">Sign Out</button>
     </nav>
-
-    <main class="max-w-lg mx-auto px-6">
-        <div class="mb-10">
-            <p class="text-slate-500 text-xs font-medium">Welcome back,</p>
-            <h2 id="user-display-email" class="text-lg font-bold truncate text-blue-400">Loading wallet...</h2>
+    <main class="max-w-lg mx-auto">
+        <div class="bg-slate-900/50 p-10 rounded-[2.5rem] border border-white/5 text-center mb-10">
+            <p id="user-email" class="text-blue-500 text-xs mb-4">Loading...</p>
+            <h3 class="text-5xl font-black">$0.00</h3>
         </div>
-
-        <div class="glass-card rounded-[2.5rem] p-10 mb-8 text-center relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-6 opacity-10">
-                <i class="fas fa-shield-alt text-6xl"></i>
-            </div>
-            <p class="text-[10px] uppercase font-black tracking-[0.4em] text-slate-500 mb-4">Total Assets</p>
-            <h3 class="text-5xl font-black tracking-tighter mb-2">$0.00</h3>
-            <div class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-wider">
-                <i class="fas fa-caret-up mr-1"></i> 0.00% Today
-            </div>
-        </div>
-
-        <div class="grid grid-cols-4 gap-4 mb-10">
-            <div class="flex flex-col items-center space-y-2">
-                <button class="action-btn w-14 h-14 rounded-2xl flex items-center justify-center text-blue-500"><i class="fas fa-paper-plane"></i></button>
-                <span class="text-[9px] font-black uppercase tracking-widest text-slate-500">Send</span>
-            </div>
-            <div class="flex flex-col items-center space-y-2">
-                <button class="action-btn w-14 h-14 rounded-2xl flex items-center justify-center text-emerald-500"><i class="fas fa-plus"></i></button>
-                <span class="text-[9px] font-black uppercase tracking-widest text-slate-500">Add</span>
-            </div>
-            <div class="flex flex-col items-center space-y-2">
-                <button class="action-btn w-14 h-14 rounded-2xl flex items-center justify-center text-purple-500"><i class="fas fa-exchange-alt"></i></button>
-                <span class="text-[9px] font-black uppercase tracking-widest text-slate-500">Swap</span>
-            </div>
-            <div class="flex flex-col items-center space-y-2">
-                <button class="action-btn w-14 h-14 rounded-2xl flex items-center justify-center text-amber-500"><i class="fas fa-credit-card"></i></button>
-                <span class="text-[9px] font-black uppercase tracking-widest text-slate-500">Card</span>
-            </div>
-        </div>
-
-        <div class="flex justify-between items-center mb-6">
-            <h4 class="text-xs font-black uppercase tracking-widest">Recent Activity</h4>
-            <span class="text-[10px] text-blue-500 font-bold">See All</span>
-        </div>
-
-        <div class="text-center py-10 glass-card rounded-3xl border-dashed border-slate-800">
-            <p class="text-slate-600 text-xs font-medium">No transactions yet.</p>
-        </div>
+        <a href="sell.html" class="block w-full bg-emerald-600 p-5 rounded-2xl text-center font-black uppercase tracking-widest">Sell Crypto for Naira</a>
     </main>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // Same config used in signup and login
-        const firebaseConfig = {
-            apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg",
-            authDomain: "dpay-core-ec1e6.firebaseapp.com",
-            projectId: "dpay-core-ec1e6",
-            storageBucket: "dpay-core-ec1e6.firebasestorage.app",
-            messagingSenderId: "259076281817",
-            appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", authDomain: "dpay-core-ec1e6.firebaseapp.com", projectId: "dpay-core-ec1e6", storageBucket: "dpay-core-ec1e6.firebasestorage.app", messagingSenderId: "259076281817", appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-
-        // Security Guard: Check for login session
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Fill user email into the header
-                document.getElementById('user-display-email').innerText = user.email;
-            } else {
-                // If not logged in, kick to login page
-                window.location.href = "login.html";
-            }
+        onAuthStateChanged(auth, (user) => { 
+            if (user) { document.getElementById('user-email').innerText = user.email; } 
+            else { window.location.href = "login.html"; } 
         });
-
-        // Logout logic
-        window.handleLogout = async () => {
-            try {
-                await signOut(auth);
-                window.location.href = "login.html";
-            } catch (error) {
-                console.error("Logout failed", error);
-            }
-        };
+        window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
     </script>
 </body>
 </html>
