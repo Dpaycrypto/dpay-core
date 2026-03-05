@@ -33,7 +33,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // UPDATED CONFIG FROM YOUR NEW WEB APP
+        // VERIFIED CONFIG WITH NEW APP ID
         const firebaseConfig = { 
             apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", 
             authDomain: "dpay-core-ec1e6.firebaseapp.com", 
@@ -44,19 +44,7 @@
         };
 
         // Version 2.0 - Forced Refresh
-const firebaseConfig = { 
-    apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", 
-    authDomain: "dpay-core-ec1e6.firebaseapp.com", 
-    projectId: "dpay-core-ec1e6", 
-    storageBucket: "dpay-core-ec1e6.firebasestorage.app", 
-    messagingSenderId: "259076281817", 
-    appId: "1:259076281817:web:ef8e3f55d3fbb663aaf5c8" 
-};
-
-// Version 2.0 - Forced Refresh
-const app = initializeApp(firebaseConfig);
-
-
+        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
         window.handleSignup = async () => {
@@ -73,11 +61,16 @@ const app = initializeApp(firebaseConfig);
             btn.disabled = true;
 
             try {
+                // Create user in Firebase
                 const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                
+                // Send Verification Email
                 await sendEmailVerification(userCredential.user);
-                alert("Success! Check your Gmail for the verification link.");
+                
+                alert("Success! Check your Gmail (and Spam folder) for the verification link.");
                 window.location.href = "login.html";
             } catch (e) {
+                // Handle errors like 'email-already-in-use'
                 alert("Error: " + e.message);
                 btn.innerText = "VERIFY MY EMAIL";
                 btn.disabled = false;
