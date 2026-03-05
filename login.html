@@ -7,26 +7,42 @@
 </head>
 <body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6">
     <div class="w-full max-w-md text-center">
-        <h1 class="text-4xl font-black mb-10 italic">DPAY<span class="text-blue-500">.</span></h1>
+        <h1 class="text-4xl font-black mb-10 italic uppercase">DPAY<span class="text-blue-500">.</span></h1>
+        
+        <p class="mb-8 text-sm text-slate-400">
+            Need an account? <a href="signup.html" class="text-blue-500 font-bold underline">Register here</a>
+        </p>
+
         <div class="space-y-4 text-left">
             <input type="email" id="email" placeholder="Email" class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
             <input type="password" id="pass" placeholder="Password" class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
-            <button onclick="handleLogin()" id="btn" class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase tracking-widest">Sign In</button>
+            <button onclick="handleLogin()" id="btn" class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase">Sign In</button>
         </div>
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        const firebaseConfig = { apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", authDomain: "dpay-core-ec1e6.firebaseapp.com", projectId: "dpay-core-ec1e6", storageBucket: "dpay-core-ec1e6.firebasestorage.app", messagingSenderId: "259076281817", appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8" };
+
+        // VERIFIED CONFIG - PLEASE DO NOT CHANGE THESE CHARACTERS
+        const firebaseConfig = { 
+            apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", 
+            authDomain: "dpay-core-ec1e6.firebaseapp.com", 
+            projectId: "dpay-core-ec1e6", 
+            storageBucket: "dpay-core-ec1e6.firebasestorage.app", 
+            messagingSenderId: "259076281817", 
+            appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
         window.handleLogin = async () => {
             const btn = document.getElementById('btn');
-            btn.innerText = "AUTHENTICATING...";
+            btn.innerText = "CHECKING...";
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value);
                 if (userCredential.user.emailVerified) { window.location.href = "dashboard.html"; }
-                else { alert("Please verify your email first!"); btn.innerText = "SIGN IN"; }
+                else { alert("Verify your Gmail first!"); btn.innerText = "SIGN IN"; }
             } catch (e) { alert(e.message); btn.innerText = "SIGN IN"; }
         };
     </script>
