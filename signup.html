@@ -43,7 +43,20 @@
             appId: "1:259076281817:web:ef8e3f55d3fbb663aaf5c8" 
         };
 
-        const app = initializeApp(firebaseConfig);
+        // Version 2.0 - Forced Refresh
+const firebaseConfig = { 
+    apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", 
+    authDomain: "dpay-core-ec1e6.firebaseapp.com", 
+    projectId: "dpay-core-ec1e6", 
+    storageBucket: "dpay-core-ec1e6.firebasestorage.app", 
+    messagingSenderId: "259076281817", 
+    appId: "1:259076281817:web:ef8e3f55d3fbb663aaf5c8" 
+};
+
+// Version 2.0 - Forced Refresh
+const app = initializeApp(firebaseConfig);
+
+
         const auth = getAuth(app);
 
         window.handleSignup = async () => {
