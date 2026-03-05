@@ -2,33 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Join</title>
+    <title>DPay | Create Account</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6">
+<body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6 text-center">
     <div class="w-full max-w-md">
-        <h1 class="text-4xl font-black mb-10">Join <span class="text-blue-500">DPay.</span></h1>
-        <div class="space-y-4">
+        <h1 class="text-4xl font-black mb-4 uppercase">Join <span class="text-blue-500">DPay.</span></h1>
+        <p class="text-slate-500 text-sm mb-10">Start selling crypto for Naira today.</p>
+
+        <div class="space-y-4 text-left">
             <input type="email" id="email" placeholder="Gmail Address" class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
-            <input type="password" id="pass" placeholder="Password" class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
-            <button onclick="handleSignup()" id="btn" class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase tracking-widest">Create Account</button>
+            <input type="password" id="pass" placeholder="Create Password" class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
+            
+            <button onclick="handleSignup()" id="btn" class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase tracking-widest mt-4">
+                Verify My Email
+            </button>
         </div>
+
+        <p class="mt-8 text-sm text-slate-500">
+            Already have an account? <a href="login.html" class="text-blue-500 font-bold underline">Sign In</a>
+        </p>
     </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        const firebaseConfig = { apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", authDomain: "dpay-core-ec1e6.firebaseapp.com", projectId: "dpay-core-ec1e6", storageBucket: "dpay-core-ec1e6.firebasestorage.app", messagingSenderId: "259076281817", appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8" };
+
+        const firebaseConfig = { 
+            apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", 
+            authDomain: "dpay-core-ec1e6.firebaseapp.com", 
+            projectId: "dpay-core-ec1e6", 
+            storageBucket: "dpay-core-ec1e6.firebasestorage.app", 
+            messagingSenderId: "259076281817", 
+            appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
         window.handleSignup = async () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
             const btn = document.getElementById('btn');
+
+            if(!email || !pass) { alert("Please fill all fields"); return; }
+
             btn.innerText = "SENDING LINK...";
+            btn.disabled = true;
+
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
                 await sendEmailVerification(userCredential.user);
-                alert("Verification link sent to your Gmail!");
+                alert("Success! Check your Gmail (and Spam folder) for the verification link.");
                 window.location.href = "login.html";
-            } catch (e) { alert(e.message); btn.innerText = "CREATE ACCOUNT"; }
+            } catch (e) {
+                alert("Error: " + e.message);
+                btn.innerText = "VERIFY MY EMAIL";
+                btn.disabled = false;
+            }
         };
     </script>
 </body>
