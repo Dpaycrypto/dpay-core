@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPay | Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #05070a; color: white; font-family: sans-serif; }
+        .card-glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body class="p-6 pb-24">
+
+    <div class="flex items-center gap-4 mb-8">
+        <a href="dashboard.html" class="w-10 h-10 card-glass rounded-full flex items-center justify-center">
+            <i class="fas fa-arrow-left text-blue-500"></i>
+        </a>
+        <h1 class="text-2xl font-bold">My Profile</h1>
+    </div>
+
+    <div class="card-glass p-8 rounded-[2.5rem] text-center mb-6">
+        <div class="w-24 h-24 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-black shadow-xl shadow-blue-900/40">
+            DU
+        </div>
+        <h2 class="text-2xl font-black tracking-tight">DPay User</h2>
+        <p class="text-slate-500 text-sm">Member since 2024</p>
+    </div>
+
+    <h3 class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-4 px-2">Account Security</h3>
+    <div class="space-y-3 mb-8">
+        <div class="card-glass p-5 rounded-3xl flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-envelope text-blue-500"></i>
+                <span class="text-sm font-bold">Email Verification</span>
+            </div>
+            <span class="bg-yellow-500/10 text-yellow-500 text-[9px] font-black px-3 py-1 rounded-full uppercase">Pending</span>
+        </div>
+        <div class="card-glass p-5 rounded-3xl flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-phone text-blue-500"></i>
+                <span class="text-sm font-bold">Phone Verification</span>
+            </div>
+            <span class="bg-yellow-500/10 text-yellow-500 text-[9px] font-black px-3 py-1 rounded-full uppercase">Pending</span>
+        </div>
+    </div>
+
+    <button onclick="logout()" class="w-full bg-red-500/10 text-red-500 border border-red-500/20 py-5 rounded-2xl font-black text-sm tracking-widest active:scale-95 transition-all">
+        LOGOUT ACCOUNT
+    </button>
+
+    <script>
+        function logout() {
+            // Clears history and sends back to login
+            window.location.replace('login.html');
+        }
+    </script>
+
+</body>
+</html>
