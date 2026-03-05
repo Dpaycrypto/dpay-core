@@ -3,33 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Join</title>
+    <title>DPay | Create Account</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { background-color: #05070a; color: white; font-family: sans-serif; }
+        .input-field { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
+        .input-field:focus { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
     </style>
 </head>
-<body class="p-8 flex flex-col min-h-screen justify-center">
+<body class="flex items-center justify-center min-h-screen p-6">
 
-    <div class="text-center mb-10">
-        <h1 class="text-3xl font-black tracking-tighter">Create Account</h1>
-        <p class="text-slate-500 text-sm mt-2">Join the future of DPay</p>
-    </div>
-
-    <div class="space-y-5">
-        <input type="text" placeholder="Full Name" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-5 focus:outline-none">
-        <input type="email" placeholder="Email Address" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-5 focus:outline-none">
-        <input type="password" placeholder="Password" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-5 focus:outline-none">
-
-        <a href="dashboard.html" class="block w-full bg-blue-600 text-white text-center font-black py-5 rounded-2xl shadow-xl shadow-blue-900/30 active:scale-95 transition-all">
-            CREATE ACCOUNT
+    <div class="w-full max-w-md">
+        <a href="login.html" class="inline-flex items-center text-slate-500 text-xs font-bold uppercase tracking-widest mb-8 hover:text-blue-500 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Login
         </a>
+
+        <h1 class="text-4xl font-black tracking-tighter mb-2">Join <span class="text-blue-500">DPay.</span></h1>
+        <p class="text-slate-500 text-sm mb-10 font-medium">Create your secure crypto wallet in seconds.</p>
+
+        <div class="space-y-4">
+            <div class="space-y-2">
+                <label class="text-[10px] uppercase font-black text-slate-500 ml-1">Gmail Address</label>
+                <input type="email" id="user-email" placeholder="name@gmail.com" 
+                    class="input-field w-full py-4 px-5 rounded-2xl outline-none text-sm text-white">
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] uppercase font-black text-slate-500 ml-1">Password</label>
+                <input type="password" id="user-password" placeholder="••••••••" 
+                    class="input-field w-full py-4 px-5 rounded-2xl outline-none text-sm text-white">
+            </div>
+
+            <button onclick="handleSignup()" id="signup-btn"
+                class="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95 mt-4">
+                Create Account
+            </button>
+        </div>
     </div>
 
-    <p class="text-center mt-10 text-sm text-slate-500">
-        Already have an account? <a href="login.html" class="text-blue-500 font-bold">Sign In</a>
-    </p>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+        // Your specific keys from your screen
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg",
+            authDomain: "dpay-core-ec1e6.firebaseapp.com",
+            projectId: "dpay-core-ec1e6",
+            storageBucket: "dpay-core-ec1e6.firebasestorage.app",
+            messagingSenderId: "259076281817",
+            appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.handleSignup = async () => {
+            const email = document.getElementById('user-email').value;
+            const password = document.getElementById('user-password').value;
+            const btn = document.getElementById('signup-btn');
+
+            if(!email || !password) {
+                alert("Please fill in both fields.");
+                return;
+            }
+
+            btn.innerText = "SENDING LINK...";
+            btn.disabled = true;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await sendEmailVerification(userCredential.user);
+                alert("Success! Check your Gmail for the verification link.");
+                window.location.href = "login.html";
+            } catch (error) {
+                alert(error.message);
+                btn.innerText = "CREATE ACCOUNT";
+                btn.disabled = false;
+            }
+        };
+    </script>
 </body>
 </html>
