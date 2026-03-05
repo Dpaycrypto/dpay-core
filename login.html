@@ -46,6 +46,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+        // VERIFIED CONFIG FROM YOUR SCREEN
         const firebaseConfig = {
             apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg",
             authDomain: "dpay-core-ec1e6.firebaseapp.com",
@@ -70,7 +71,7 @@
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // SECURITY CHECK: Is the email verified?
+                // Check if they verified their Gmail
                 if (user.emailVerified) {
                     window.location.href = "dashboard.html"; 
                 } else {
