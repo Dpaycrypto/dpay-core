@@ -7,37 +7,41 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #05070a; color: white; }
+        body { background-color: #05070a; color: white; font-family: sans-serif; }
         .card-glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        input[type="file"] { display: none; }
     </style>
 </head>
-<body class="p-6">
+<body class="p-6 pb-24">
+
     <div class="flex items-center gap-4 mb-8">
-        <a href="dashboard.html" class="text-slate-400"><i class="fas fa-arrow-left"></i></a>
+        <a href="dashboard.html" class="w-10 h-10 card-glass rounded-full flex items-center justify-center">
+            <i class="fas fa-arrow-left text-blue-500"></i>
+        </a>
         <h1 class="text-xl font-bold">Sell Gift Cards</h1>
     </div>
 
     <div class="grid grid-cols-2 gap-4">
         <div onclick="openTrade('Amazon')" class="card-glass p-5 rounded-[2rem] text-center active:scale-95 transition-all">
-            <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-3 flex items-center justify-center text-black text-3xl shadow-xl"><i class="fab fa-amazon"></i></div>
+            <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-3 flex items-center justify-center text-black text-3xl"><i class="fab fa-amazon"></i></div>
             <p class="font-bold text-xs uppercase tracking-widest">Amazon</p>
         </div>
-        <div onclick="openTrade('iTunes/Apple')" class="card-glass p-5 rounded-[2rem] text-center active:scale-95 transition-all">
-            <div class="w-16 h-16 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white text-3xl shadow-xl"><i class="fab fa-apple"></i></div>
+        <div onclick="openTrade('iTunes')" class="card-glass p-5 rounded-[2rem] text-center active:scale-95 transition-all">
+            <div class="w-16 h-16 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white text-3xl"><i class="fab fa-apple"></i></div>
             <p class="font-bold text-xs uppercase tracking-widest">iTunes</p>
         </div>
         <div onclick="openTrade('Google Play')" class="card-glass p-5 rounded-[2rem] text-center active:scale-95 transition-all">
-            <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-3 flex items-center justify-center text-green-600 text-3xl shadow-xl"><i class="fab fa-google-play"></i></div>
+            <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-3 flex items-center justify-center text-green-600 text-3xl"><i class="fab fa-google-play"></i></div>
             <p class="font-bold text-xs uppercase tracking-widest">Google Play</p>
         </div>
         <div onclick="openTrade('Steam')" class="card-glass p-5 rounded-[2rem] text-center active:scale-95 transition-all">
-            <div class="w-16 h-16 bg-slate-800 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white text-3xl shadow-xl"><i class="fab fa-steam"></i></div>
-            <p class="font-bold text-xs uppercase tracking-widest">Steam Card</p>
+            <div class="w-16 h-16 bg-slate-800 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white text-3xl"><i class="fab fa-steam"></i></div>
+            <p class="font-bold text-xs uppercase tracking-widest">Steam</p>
         </div>
     </div>
 
     <div id="tradeModal" class="hidden fixed inset-0 bg-black/95 z-50 p-6 flex items-center justify-center">
-        <div class="card-glass w-full p-8 rounded-[2.5rem]">
+        <div class="card-glass w-full max-h-[90vh] overflow-y-auto p-8 rounded-[2.5rem]">
             <h2 class="text-2xl font-black mb-6">Sell <span id="cardTitle" class="text-blue-500"></span></h2>
             
             <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Card Country</label>
@@ -49,9 +53,18 @@
             </select>
 
             <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Card Amount ($)</label>
-            <input type="number" placeholder="Enter Amount" class="w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl mb-6 outline-none">
+            <input type="number" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl mb-6 outline-none">
             
-            <button class="w-full bg-blue-600 py-5 rounded-2xl font-black text-xs tracking-widest mb-2">PROCEED TO UPLOAD</button>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Upload Card Image</label>
+            <label for="card-upload" class="flex flex-col items-center justify-center w-full h-32 bg-slate-900 border-2 border-dashed border-slate-800 rounded-2xl mb-6 cursor-pointer hover:border-blue-500 transition-colors">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <i class="fas fa-camera text-slate-600 text-2xl mb-2"></i>
+                    <p class="text-[10px] text-slate-500 font-bold" id="file-name">Click to snap or upload</p>
+                </div>
+                <input id="card-upload" type="file" accept="image/*" onchange="updateFileName(this)" />
+            </label>
+
+            <button class="w-full bg-blue-600 py-5 rounded-2xl font-black text-xs tracking-widest mb-2 shadow-xl shadow-blue-900/20">SUBMIT TRADE</button>
             <button onclick="closeTrade()" class="w-full text-slate-500 text-xs font-bold py-2">CANCEL</button>
         </div>
     </div>
@@ -63,6 +76,11 @@
         }
         function closeTrade() {
             document.getElementById('tradeModal').classList.add('hidden');
+        }
+        function updateFileName(input) {
+            const name = input.files[0] ? input.files[0].name : "Click to snap or upload";
+            document.getElementById('file-name').innerText = name;
+            document.getElementById('file-name').classList.add('text-blue-500');
         }
     </script>
 </body>
