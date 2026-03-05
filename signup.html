@@ -13,13 +13,13 @@
 
         <div class="space-y-4 text-left">
             <input type="email" id="email" placeholder="Gmail Address" 
-                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500">
+                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
             
             <input type="password" id="pass" placeholder="Create Password" 
-                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500">
+                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
             
             <button onclick="handleSignup()" id="btn" 
-                class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase tracking-widest mt-4">
+                class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all mt-4">
                 Verify My Email
             </button>
         </div>
@@ -33,13 +33,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+        // UPDATED CONFIG FROM YOUR NEW WEB APP
         const firebaseConfig = { 
             apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", 
             authDomain: "dpay-core-ec1e6.firebaseapp.com", 
             projectId: "dpay-core-ec1e6", 
             storageBucket: "dpay-core-ec1e6.firebasestorage.app", 
             messagingSenderId: "259076281817", 
-            appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8" 
+            appId: "1:259076281817:web:ef8e3f55d3fbb663aaf5c8" 
         };
 
         const app = initializeApp(firebaseConfig);
@@ -50,7 +51,11 @@
             const pass = document.getElementById('pass').value;
             const btn = document.getElementById('btn');
 
-            if(!email || !pass) { alert("Please fill both fields"); return; }
+            if(!email || !pass) { 
+                alert("Please fill in both fields!"); 
+                return; 
+            }
+
             btn.innerText = "SENDING LINK...";
             btn.disabled = true;
 
