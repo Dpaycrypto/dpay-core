@@ -3,59 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Buy Airtime & Data</title>
+    <title>DPay | Bill Payments</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #05070a; color: white; }
-        .card-glass { background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .network-btn { transition: all 0.3s ease; border: 2px solid transparent; }
-        .network-btn:active { border-color: #3b82f6; transform: scale(0.95); }
+        body { background-color: #05070a; color: white; font-family: sans-serif; }
+        .card-glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .network-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
     </style>
 </head>
 <body class="p-6 pb-24">
 
     <div class="flex items-center gap-4 mb-8">
-        <a href="index.html" class="w-10 h-10 card-glass rounded-full flex items-center justify-center">
-            <i class="fas fa-chevron-left text-blue-500"></i>
+        <a href="dashboard.html" class="w-10 h-10 card-glass rounded-full flex items-center justify-center">
+            <i class="fas fa-arrow-left text-blue-500"></i>
         </a>
-        <h1 class="text-2xl font-bold">Bill Payments</h1>
+        <h1 class="text-2xl font-bold">Bills & VTU</h1>
     </div>
 
-    <p class="text-slate-400 text-sm mb-4 uppercase tracking-widest font-semibold">Select Network</p>
+    <div class="flex bg-slate-900 p-1 rounded-2xl mb-8">
+        <button class="flex-1 py-3 rounded-xl bg-blue-600 text-xs font-black uppercase">Airtime</button>
+        <button class="flex-1 py-3 rounded-xl text-slate-500 text-xs font-black uppercase">Data Bundle</button>
+    </div>
+
+    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 ml-2">Select Provider</p>
     <div class="grid grid-cols-4 gap-3 mb-8">
-        <button class="network-btn card-glass p-3 rounded-xl flex flex-col items-center gap-2">
-            <div class="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-black font-bold text-xs text-center leading-none">MTN</div>
-        </button>
-        <button class="network-btn card-glass p-3 rounded-xl flex flex-col items-center gap-2">
-            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-xs text-center leading-none">Airtel</div>
-        </button>
-        <button class="network-btn card-glass p-3 rounded-xl flex flex-col items-center gap-2">
-            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-xs text-center leading-none">GLO</div>
-        </button>
-        <button class="network-btn card-glass p-3 rounded-xl flex flex-col items-center gap-2">
-            <div class="w-10 h-10 bg-black border border-slate-700 rounded-full flex items-center justify-center text-yellow-500 font-bold text-[10px] text-center leading-none">9mobile</div>
-        </button>
+        <div class="network-btn card-glass p-2 rounded-2xl text-center border border-transparent active:scale-95 transition-all">
+            <div class="w-10 h-10 bg-yellow-400 rounded-xl mx-auto mb-1 flex items-center justify-center text-black font-black text-[10px]">MTN</div>
+        </div>
+        <div class="network-btn card-glass p-2 rounded-2xl text-center border border-transparent active:scale-95 transition-all">
+            <div class="w-10 h-10 bg-red-600 rounded-xl mx-auto mb-1 flex items-center justify-center text-white font-black text-[10px]">Airtel</div>
+        </div>
+        <div class="network-btn card-glass p-2 rounded-2xl text-center border border-transparent active:scale-95 transition-all">
+            <div class="w-10 h-10 bg-green-600 rounded-xl mx-auto mb-1 flex items-center justify-center text-white font-black text-[10px]">Glo</div>
+        </div>
+        <div class="network-btn card-glass p-2 rounded-2xl text-center border border-transparent active:scale-95 transition-all">
+            <div class="w-10 h-10 bg-black rounded-xl mx-auto mb-1 flex items-center justify-center text-white font-black text-[10px]">9mob</div>
+        </div>
     </div>
 
     <div class="space-y-6">
         <div>
-            <label class="text-xs text-slate-500 mb-2 block uppercase">Phone Number</label>
-            <input type="number" placeholder="08012345678" class="w-full bg-slate-900 border border-slate-800 rounded-xl py-4 px-4 focus:outline-none focus:border-blue-500">
+            <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 block">Phone Number</label>
+            <input type="tel" placeholder="08012345678" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-5 focus:outline-none focus:border-blue-500 transition-all">
         </div>
 
         <div>
-            <label class="text-xs text-slate-500 mb-2 block uppercase">Select Amount</label>
-            <div class="grid grid-cols-3 gap-2">
-                <button class="card-glass py-3 rounded-lg text-sm hover:bg-blue-600">₦100</button>
-                <button class="card-glass py-3 rounded-lg text-sm hover:bg-blue-600">₦500</button>
-                <button class="card-glass py-3 rounded-lg text-sm hover:bg-blue-600">₦1,000</button>
-            </div>
-            <input type="number" placeholder="Or enter custom amount" class="w-full bg-slate-900 border border-slate-800 rounded-xl py-4 px-4 mt-3 focus:outline-none focus:border-blue-500">
+            <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 block">Amount (₦)</label>
+            <input type="number" placeholder="500" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-5 focus:outline-none focus:border-blue-500 transition-all">
         </div>
 
-        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all">
-            PURCHASE AIRTIME
+        <div class="card-glass p-4 rounded-2xl flex justify-between items-center text-sm">
+            <span class="text-slate-500">Transaction Fee</span>
+            <span class="font-bold">₦0.00</span>
+        </div>
+
+        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-black py-5 rounded-2xl shadow-xl shadow-blue-900/30 active:scale-95 transition-all tracking-widest uppercase text-xs">
+            Purchase Airtime
         </button>
     </div>
 
