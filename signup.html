@@ -13,13 +13,13 @@
 
         <div class="space-y-4 text-left">
             <input type="email" id="email" placeholder="Gmail Address" 
-                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
+                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500">
             
             <input type="password" id="pass" placeholder="Create Password" 
-                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
+                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500">
             
             <button onclick="handleSignup()" id="btn" 
-                class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all mt-4">
+                class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase tracking-widest mt-4">
                 Verify My Email
             </button>
         </div>
@@ -33,7 +33,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // VERIFIED CONFIG - EXACTLY AS PER YOUR FIREBASE DASHBOARD
         const firebaseConfig = { 
             apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", 
             authDomain: "dpay-core-ec1e6.firebaseapp.com", 
@@ -51,25 +50,16 @@
             const pass = document.getElementById('pass').value;
             const btn = document.getElementById('btn');
 
-            if(!email || !pass) { 
-                alert("Please fill in both fields!"); 
-                return; 
-            }
-
+            if(!email || !pass) { alert("Please fill both fields"); return; }
             btn.innerText = "SENDING LINK...";
             btn.disabled = true;
 
             try {
-                // Step 1: Create the User
                 const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                
-                // Step 2: Send the Gmail Verification
                 await sendEmailVerification(userCredential.user);
-                
-                alert("Success! Check your Gmail (and Spam) for the verification link.");
+                alert("Success! Check your Gmail for the verification link.");
                 window.location.href = "login.html";
             } catch (e) {
-                // If it fails, show the exact error and reset the button
                 alert("Error: " + e.message);
                 btn.innerText = "VERIFY MY EMAIL";
                 btn.disabled = false;
