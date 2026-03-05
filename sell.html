@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPay | Sell for Naira</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-[#020408] text-white p-6">
+    <div class="max-w-md mx-auto">
+        <div class="flex justify-between items-center mb-10">
+            <a href="dashboard.html" class="text-slate-500"><i class="fas fa-arrow-left"></i></a>
+            <h2 class="text-[10px] font-black uppercase tracking-widest">Sell Crypto</h2>
+            <div class="w-4"></div>
+        </div>
+
+        <div class="bg-slate-900/40 p-6 rounded-3xl border border-white/5 mb-6">
+            <label class="text-[9px] font-black uppercase text-slate-500 mb-4 block">You Sell (USDT)</label>
+            <input type="number" id="usd-input" oninput="calculate()" placeholder="0.00" class="bg-transparent text-4xl font-black outline-none w-full mb-4">
+            <div class="h-[1px] bg-white/5 mb-4"></div>
+            <label class="text-[9px] font-black uppercase text-slate-500 mb-2 block">You Get (Naira)</label>
+            <h3 id="naira-display" class="text-2xl font-black text-emerald-500">₦0.00</h3>
+        </div>
+
+        <div class="bg-slate-900/40 p-6 rounded-3xl border border-white/5 mb-8 space-y-4">
+            <input type="text" placeholder="Account Number" class="w-full bg-black/40 p-4 rounded-2xl border border-white/5 outline-none text-sm">
+            <input type="text" placeholder="Bank Name" class="w-full bg-black/40 p-4 rounded-2xl border border-white/5 outline-none text-sm">
+        </div>
+
+        <button onclick="submitOrder()" id="sell-btn" class="w-full bg-emerald-600 p-5 rounded-2xl font-black uppercase tracking-widest">Withdraw Naira</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = { 
+            apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg", 
+            authDomain: "dpay-core-ec1e6.firebaseapp.com", 
+            projectId: "dpay-core-ec1e6", 
+            storageBucket: "dpay-core-ec1e6.firebasestorage.app", 
+            messagingSenderId: "259076281817", 
+            appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8" 
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const RATE = 1550; // Set your Naira rate here
+
+        onAuthStateChanged(auth, (user) => { if (!user) window.location.href = "login.html"; });
+
+        window.calculate = () => {
+            const usd = document.getElementById('usd-input').value;
+            document.getElementById('naira-display').innerText = usd ? "₦" + (usd * RATE).toLocaleString() : "₦0.00";
+        };
+
+        window.submitOrder = () => {
+            alert("Order Submitted! Send your USDT to the company wallet address on the next page.");
+            // Next we build the "Payment Proof" page
+        };
+    </script>
+</body>
+</html>
