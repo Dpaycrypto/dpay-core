@@ -7,55 +7,58 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #05070a; color: white; font-family: sans-serif; }
-        .card-glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        body { background-color: #05070a; color: white; }
+        .card-glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
-<body class="p-6 pb-24">
-
+<body class="p-6">
     <div class="flex items-center gap-4 mb-8">
-        <a href="dashboard.html" class="w-10 h-10 card-glass rounded-full flex items-center justify-center">
-            <i class="fas fa-arrow-left text-blue-500"></i>
-        </a>
-        <h1 class="text-2xl font-bold">My Profile</h1>
+        <a href="dashboard.html" class="text-slate-400"><i class="fas fa-chevron-left text-xl"></i></a>
+        <h1 class="text-xl font-bold">Profile Settings</h1>
     </div>
 
-    <div class="card-glass p-8 rounded-[2.5rem] text-center mb-6">
-        <div class="w-24 h-24 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-black shadow-xl shadow-blue-900/40">
-            DU
-        </div>
-        <h2 class="text-2xl font-black tracking-tight">DPay User</h2>
-        <p class="text-slate-500 text-sm">Member since 2024</p>
+    <div class="text-center mb-8">
+        <div class="w-24 h-24 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold border-4 border-slate-900 shadow-2xl">DU</div>
+        <h2 class="text-2xl font-black">DPay User</h2>
+        <p class="text-blue-500 text-xs font-bold uppercase tracking-widest mt-1">Verified Trader</p>
     </div>
 
-    <h3 class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-4 px-2">Account Security</h3>
-    <div class="space-y-3 mb-8">
-        <div class="card-glass p-5 rounded-3xl flex justify-between items-center">
+    <div class="space-y-4 mb-8">
+        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Account Security</p>
+        <div class="card-glass p-4 rounded-3xl flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <i class="fas fa-envelope text-blue-500"></i>
-                <span class="text-sm font-bold">Email Verification</span>
+                <div class="w-10 h-10 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500"><i class="fas fa-envelope"></i></div>
+                <div><p class="text-sm font-bold">Email Address</p><p class="text-[10px] text-slate-500">Not verified</p></div>
             </div>
-            <span class="bg-yellow-500/10 text-yellow-500 text-[9px] font-black px-3 py-1 rounded-full uppercase">Pending</span>
+            <button class="text-[10px] font-black text-blue-500 border border-blue-500/20 px-4 py-2 rounded-xl">VERIFY</button>
         </div>
-        <div class="card-glass p-5 rounded-3xl flex justify-between items-center">
+        <div class="card-glass p-4 rounded-3xl flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <i class="fas fa-phone text-blue-500"></i>
-                <span class="text-sm font-bold">Phone Verification</span>
+                <div class="w-10 h-10 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500"><i class="fas fa-phone"></i></div>
+                <div><p class="text-sm font-bold">Phone Number</p><p class="text-[10px] text-slate-500">Not verified</p></div>
             </div>
-            <span class="bg-yellow-500/10 text-yellow-500 text-[9px] font-black px-3 py-1 rounded-full uppercase">Pending</span>
+            <button class="text-[10px] font-black text-blue-500 border border-blue-500/20 px-4 py-2 rounded-xl">VERIFY</button>
         </div>
     </div>
 
-    <button onclick="logout()" class="w-full bg-red-500/10 text-red-500 border border-red-500/20 py-5 rounded-2xl font-black text-sm tracking-widest active:scale-95 transition-all">
-        LOGOUT ACCOUNT
-    </button>
+    <div class="space-y-4">
+        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Preferences</p>
+        <div class="card-glass p-4 rounded-3xl flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-slate-800 rounded-2xl flex items-center justify-center"><i class="fas fa-bell"></i></div>
+                <p class="text-sm font-bold">Notifications</p>
+            </div>
+            <i class="fas fa-chevron-right text-slate-700"></i>
+        </div>
+        <div class="card-glass p-4 rounded-3xl flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-slate-800 rounded-2xl flex items-center justify-center"><i class="fas fa-shield-alt"></i></div>
+                <p class="text-sm font-bold">Two-Factor Auth</p>
+            </div>
+            <i class="fas fa-chevron-right text-slate-700"></i>
+        </div>
+    </div>
 
-    <script>
-        function logout() {
-            // Clears history and sends back to login
-            window.location.replace('login.html');
-        }
-    </script>
-
+    <button onclick="window.location.replace('login.html')" class="w-full mt-10 py-5 text-red-500 font-black text-xs tracking-widest uppercase">Logout Account</button>
 </body>
 </html>

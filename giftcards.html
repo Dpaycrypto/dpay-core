@@ -3,50 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Sell Gift Cards</title>
+    <title>DPay | Sell Cards</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { background-color: #05070a; color: white; }
-        .card-glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .card-glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body class="p-6">
     <div class="flex items-center gap-4 mb-8">
-        <a href="dashboard.html" class="w-10 h-10 card-glass rounded-full flex items-center justify-center"><i class="fas fa-arrow-left text-blue-500"></i></a>
-        <h1 class="text-2xl font-bold">Sell Gift Cards</h1>
+        <a href="dashboard.html" class="text-slate-400"><i class="fas fa-arrow-left"></i></a>
+        <h1 class="text-xl font-bold">Sell Gift Cards</h1>
     </div>
 
     <div class="grid grid-cols-2 gap-4">
-        <div class="card-glass p-4 rounded-3xl text-center">
-            <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-3 flex items-center justify-center">
-                <i class="fab fa-amazon text-3xl text-black"></i>
-            </div>
-            <p class="font-bold text-sm mb-3">Amazon US</p>
-            <button onclick="openTrade('Amazon')" class="w-full bg-blue-600 py-2 rounded-xl text-[10px] font-black uppercase">Sell Card</button>
+        <div onclick="openTrade('Amazon')" class="card-glass p-5 rounded-[2rem] text-center active:scale-95 transition-all">
+            <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-3 flex items-center justify-center text-black text-3xl shadow-xl"><i class="fab fa-amazon"></i></div>
+            <p class="font-bold text-xs uppercase tracking-widest">Amazon</p>
         </div>
-        <div class="card-glass p-4 rounded-3xl text-center">
-            <div class="w-16 h-16 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white">
-                <i class="fab fa-apple text-3xl"></i>
-            </div>
-            <p class="font-bold text-sm mb-3">iTunes/Apple</p>
-            <button onclick="openTrade('iTunes')" class="w-full bg-blue-600 py-2 rounded-xl text-[10px] font-black uppercase">Sell Card</button>
+        <div onclick="openTrade('iTunes/Apple')" class="card-glass p-5 rounded-[2rem] text-center active:scale-95 transition-all">
+            <div class="w-16 h-16 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white text-3xl shadow-xl"><i class="fab fa-apple"></i></div>
+            <p class="font-bold text-xs uppercase tracking-widest">iTunes</p>
+        </div>
+        <div onclick="openTrade('Google Play')" class="card-glass p-5 rounded-[2rem] text-center active:scale-95 transition-all">
+            <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-3 flex items-center justify-center text-green-600 text-3xl shadow-xl"><i class="fab fa-google-play"></i></div>
+            <p class="font-bold text-xs uppercase tracking-widest">Google Play</p>
+        </div>
+        <div onclick="openTrade('Steam')" class="card-glass p-5 rounded-[2rem] text-center active:scale-95 transition-all">
+            <div class="w-16 h-16 bg-slate-800 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white text-3xl shadow-xl"><i class="fab fa-steam"></i></div>
+            <p class="font-bold text-xs uppercase tracking-widest">Steam Card</p>
         </div>
     </div>
 
-    <div id="tradeModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center p-6 z-50">
-        <div class="card-glass w-full p-6 rounded-[2rem]">
-            <h2 class="text-xl font-bold mb-4">Submit <span id="cardName"></span> Card</h2>
-            <input type="number" placeholder="Amount ($)" class="w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl mb-4 outline-none">
-            <input type="text" placeholder="Card Code / PIN" class="w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl mb-4 outline-none">
-            <button class="w-full bg-green-600 py-4 rounded-2xl font-bold mb-2">SUBMIT FOR REVIEW</button>
-            <button onclick="closeTrade()" class="w-full text-slate-500 text-sm">Cancel</button>
+    <div id="tradeModal" class="hidden fixed inset-0 bg-black/95 z-50 p-6 flex items-center justify-center">
+        <div class="card-glass w-full p-8 rounded-[2.5rem]">
+            <h2 class="text-2xl font-black mb-6">Sell <span id="cardTitle" class="text-blue-500"></span></h2>
+            
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Card Country</label>
+            <select class="w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl mb-4 text-sm outline-none">
+                <option>USA (United States)</option>
+                <option>UK (United Kingdom)</option>
+                <option>EUR (Europe)</option>
+                <option>CAD (Canada)</option>
+            </select>
+
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Card Amount ($)</label>
+            <input type="number" placeholder="Enter Amount" class="w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl mb-6 outline-none">
+            
+            <button class="w-full bg-blue-600 py-5 rounded-2xl font-black text-xs tracking-widest mb-2">PROCEED TO UPLOAD</button>
+            <button onclick="closeTrade()" class="w-full text-slate-500 text-xs font-bold py-2">CANCEL</button>
         </div>
     </div>
 
     <script>
         function openTrade(name) {
-            document.getElementById('cardName').innerText = name;
+            document.getElementById('cardTitle').innerText = name;
             document.getElementById('tradeModal').classList.remove('hidden');
         }
         function closeTrade() {
