@@ -3,112 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Join</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/emailjs.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+    <title>DPay - Sign Up</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
-<body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6">
-    <div class="w-full max-w-md text-center">
-        <h1 class="text-4xl font-black mb-2 uppercase italic text-blue-500">DPAY.</h1>
-        <p class="text-slate-500 text-sm mb-10">Start selling crypto for Naira today.</p>
+<body>
 
-        <div class="space-y-4 text-left" id="signup-form">
-            <input type="email" id="email" placeholder="Gmail Address" 
-                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
-            
-            <input type="tel" id="phone" placeholder="Phone Number (optional)" 
-                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
-            
-            <input type="password" id="pass" placeholder="Create Password" 
-                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
-            
-            <button type="button" onclick="handleSignup()" id="btn" 
-                class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all mt-4">
-                Sign Up
-            </button>
+    <h2>Create your DPay Account</h2>
+    <input type="email" id="email" placeholder="Email Address"><br><br>
+    <input type="password" id="pass" placeholder="Password"><br><br>
+    <button id="btn" onclick="handleSignup()">VERIFY MY EMAIL</button>
 
-        <p class="mt-10 text-sm text-slate-500 font-medium">
-            Already have an account? <a href="login.html" class="text-blue-500 font-bold underline">Sign In</a>
-        </p>
-    </div>
+    <script type="module">
+        // 2. Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    <script>
-        // Firebase config
-        const firebaseConfig = { 
-            apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4", 
-            authDomain: "dpay-core.firebaseapp.com", 
-            projectId: "dpay-core", 
-            storageBucket: "dpay-core.firebasestorage.app", 
-            messagingSenderId: "415239564375", 
-            appId: "1:415239564375:web:ac372f11b7243c21a90712" 
+        // 3. Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg",
+            authDomain: "dpay-core-ec1e6.firebaseapp.com",
+            projectId: "dpay-core-ec1e6",
+            storageBucket: "dpay-core-ec1e6.firebasestorage.app",
+            messagingSenderId: "259076281817",
+            appId: "1:259076281817:web:ef8e3f55d3fbb663aaf5c8"
         };
 
-        // Initialize Firebase
-        let app, auth;
-        try {
-            app = firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            console.log("Firebase initialized");
-        } catch (e) {
-            console.error("Firebase init error:", e);
-            alert("Firebase failed to load. Please disable ad blocker.");
-        }
-
-        // Initialize EmailJS
-        try {
-            emailjs.init("sq_PGY4EB2TDai6P0");
-            console.log("EmailJS initialized");
-        } catch (e) {
-            console.error("EmailJS init error:", e);
-        }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
         window.handleSignup = async () => {
-            alert("Button clicked!");
-            console.log("Sign up button clicked");
             const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
             const pass = document.getElementById('pass').value;
             const btn = document.getElementById('btn');
 
-            if(!email || !pass) { 
-                alert("Please fill in email and password!"); 
-                return; 
-            }
-
-            btn.innerText = "SIGNING UP...";
+            // --- GENERATE RANDOM 6-DIGIT CODE ---
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            
+            btn.innerText = "SENDING CODE...";
             btn.disabled = true;
 
             try {
-                // Create user in Firebase
-                const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
-                
-                // Generate verification code
-                const verificationCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-                
-                // Store code for verification
-                localStorage.setItem('verificationCode', verificationCode);
-                
-                // Send code via EmailJS
-                try {
-                    await emailjs.send("service_t1xt52i", "template_xa87h1l", {
-                        to_email: email,
-                        code: verificationCode
-                    });
-                    alert("Code sent! Check your email for the verification code from DPay.");
-                } catch (emailError) {
-                    console.error("EmailJS Error:", emailError);
-                    alert("Email send failed. Your code is: " + verificationCode + ". Enter it on the verify page.");
-                }
-                
-                // Redirect to verification page
-                window.location.href = "verify.html";
+                // 4. Create User in Firebase
+                await createUserWithEmailAndPassword(auth, email, pass);
+
+                // 5. Send Code via EmailJS using YOUR IDs
+                emailjs.send(
+                    "service_t1xt52i", 
+                    "template_nmwdehj", 
+                    {
+                        to_email: email, // This matches the {{to_email}} we talked about
+                        otp_code: otp,   // This matches the {{otp_code}} in your email
+                    }, 
+                    "sq_PGY4EB2TDai6P0"
+                )
+                .then(() => {
+                    alert("Success! Code sent to " + email);
+                    // Save the code to check it on the next page
+                    localStorage.setItem("userOTP", otp);
+                    window.location.href = "verify.html"; 
+                });
+
             } catch (e) {
-                // Handle errors
-                console.error("Firebase Error:", e);
-                alert("Error: " + e.code + " - " + e.message);
-                btn.innerText = "SIGN UP";
+                alert("Error: " + e.message);
+                btn.innerText = "VERIFY MY EMAIL";
                 btn.disabled = false;
             }
         };
