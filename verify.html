@@ -25,18 +25,21 @@
     </div>
 
     <script>
-        window.verifyCode = () => {
-            const enteredCode = document.getElementById('verification-code').value.toUpperCase();
-            const storedCode = localStorage.getItem('verificationCode');
-            
-            if (enteredCode === storedCode) {
-                localStorage.removeItem('verificationCode');
-                alert("Verification successful! You can now log in.");
-                window.location.href = "login.html";
+        function checkCode() {
+            const userTyped = document.getElementById('verification-code').value;
+            const correctOTP = localStorage.getItem("userOTP");
+
+            // We use == instead of === to make sure it matches even if one is text
+            if (userTyped == correctOTP) { 
+                alert("Success! Welcome to DPay.");
+                window.location.href = "dashboard.html"; 
             } else {
-                alert("Invalid code. Please try again.");
+                alert("Invalid code. Please check your email.");
             }
-        };
+        }
+
+        // keep verifyCode alias for backward compatibility if used elsewhere
+        window.verifyCode = checkCode;
     </script>
 </body>
 </html></content>
