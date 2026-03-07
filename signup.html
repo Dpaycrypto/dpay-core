@@ -6,8 +6,8 @@
     <title>DPay | Join</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/emailjs.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
 </head>
 <body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6">
     <div class="w-full max-w-md text-center">
@@ -49,7 +49,7 @@
         let app, auth;
         try {
             app = firebase.initializeApp(firebaseConfig);
-            auth = firebase.getAuth(app);
+            auth = firebase.auth();
             console.log("Firebase initialized");
         } catch (e) {
             console.error("Firebase init error:", e);
@@ -82,7 +82,7 @@
 
             try {
                 // Create user in Firebase
-                const userCredential = await firebase.createUserWithEmailAndPassword(auth, email, pass);
+                const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
                 
                 // Generate verification code
                 const verificationCode = Math.random().toString(36).substring(2, 8).toUpperCase();
