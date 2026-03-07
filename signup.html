@@ -5,70 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DPay - Sign Up</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f0f2f5; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button:disabled { background-color: #ccc; }
+    </style>
 </head>
 <body>
 
-    <h2>Create your DPay Account</h2>
-    <input type="email" id="email" placeholder="Email Address"><br><br>
-    <input type="password" id="pass" placeholder="Password"><br><br>
+<div class="container">
+    <h2>Join DPay</h2>
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="pass" placeholder="Create Password">
     <button id="btn" onclick="handleSignup()">VERIFY MY EMAIL</button>
+</div>
 
-    <script type="module">
-        // 2. Firebase Imports
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+<script type="module">
+    // Firebase Modular SDK Imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // 3. Your Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg",
-            authDomain: "dpay-core-ec1e6.firebaseapp.com",
-            projectId: "dpay-core-ec1e6",
-            storageBucket: "dpay-core-ec1e6.firebasestorage.app",
-            messagingSenderId: "259076281817",
-            appId: "1:259076281817:web:ef8e3f55d3fbb663aaf5c8"
-        };
+    // Your Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg",
+        authDomain: "dpay-core-ec1e6.firebaseapp.com",
+        projectId: "dpay-core-ec1e6",
+        storageBucket: "dpay-core-ec1e6.firebasestorage.app",
+        messagingSenderId: "259076281817",
+        appId: "1:259076281817:web:ef8e3f55d3fbb663aaf5c8"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-        window.handleSignup = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-            const btn = document.getElementById('btn');
+    window.handleSignup = async () => {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        const btn = document.getElementById('btn');
 
-            // --- GENERATE RANDOM 6-DIGIT CODE ---
-            const otp = Math.floor(100000 + Math.random() * 900000);
-            
-            btn.innerText = "SENDING CODE...";
-            btn.disabled = true;
+        if(!email || !pass) return alert("Please fill in all fields");
 
-            try {
-                // 4. Create User in Firebase
-                await createUserWithEmailAndPassword(auth, email, pass);
+        // Generate a random 6-digit code for the user
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        
+        btn.innerText = "SENDING CODE...";
+        btn.disabled = true;
 
-                // 5. Send Code via EmailJS using YOUR IDs
-                emailjs.send(
-                    "service_t1xt52i", 
-                    "template_nmwdehj", 
-                    {
-                        to_email: email, // This matches the {{to_email}} we talked about
-                        otp_code: otp,   // This matches the {{otp_code}} in your email
-                    }, 
-                    "sq_PGY4EB2TDai6P0"
-                )
-                .then(() => {
-                    alert("Success! Code sent to " + email);
-                    // Save the code to check it on the next page
-                    localStorage.setItem("userOTP", otp);
-                    window.location.href = "verify.html"; 
-                });
+        try {
+            // 1. Create the user in Firebase
+            // Note: We use the standalone function call to avoid the 'auth.createUser' error
+            await createUserWithEmailAndPassword(auth, email, pass);
 
-            } catch (e) {
-                alert("Error: " + e.message);
-                btn.innerText = "VERIFY MY EMAIL";
-                btn.disabled = false;
-            }
-        };
-    </script>
+            // 2. Send the code via EmailJS
+            emailjs.send(
+                "service_t1xt52i",   // Your Service ID
+                "template_nmwdehj",  // Your Template ID
+                {
+                    to_email: email, // Matches {{to_email}} in your template
+                    otp_code: otp,   // Matches {{otp_code}} in your email text
+                }, 
+                "sq_PGY4EB2TDai6P0"   // Your Public Key
+            )
+            .then(() => {
+                alert("Success! Check your Gmail for the code.");
+                localStorage.setItem("userOTP", otp); // Save code locally to verify on next page
+                window.location.href = "verify.html"; // Redirect to verification screen
+            });
+
+        } catch (e) {
+            alert("Signup Error: " + e.message);
+            btn.innerText = "VERIFY MY EMAIL";
+            btn.disabled = false;
+        }
+    };
+</script>
+
 </body>
 </html>
