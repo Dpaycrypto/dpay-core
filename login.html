@@ -42,7 +42,7 @@
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value);
                 if (userCredential.user.emailVerified) { window.location.href = "dashboard.html"; }
-                else { alert("Verify your Gmail first!"); btn.innerText = "SIGN IN"; }
+                else { alert("Please verify your email first! Check your Gmail for the DPay verification link."); btn.innerText = "SIGN IN"; }
             } catch (e) { alert(e.message); btn.innerText = "SIGN IN"; }
         };
     </script>
