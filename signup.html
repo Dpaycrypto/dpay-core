@@ -6,6 +6,8 @@
     <title>DPay | Join</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/emailjs.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
 </head>
 <body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6">
     <div class="w-full max-w-md text-center">
@@ -32,11 +34,8 @@
         </p>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // VERIFIED CONFIG WITH NEW APP ID
+    <script>
+        // Firebase config
         const firebaseConfig = { 
             apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4", 
             authDomain: "dpay-core.firebaseapp.com", 
@@ -46,9 +45,9 @@
             appId: "1:415239564375:web:ac372f11b7243c21a90712" 
         };
 
-        // Version 2.0 - Forced Refresh
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.getAuth(app);
 
         // Initialize EmailJS
         try {
@@ -74,7 +73,7 @@
 
             try {
                 // Create user in Firebase
-                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                const userCredential = await firebase.createUserWithEmailAndPassword(auth, email, pass);
                 
                 // Generate verification code
                 const verificationCode = Math.random().toString(36).substring(2, 8).toUpperCase();
