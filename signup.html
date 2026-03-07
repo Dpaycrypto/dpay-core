@@ -78,12 +78,16 @@
                 localStorage.setItem('verificationCode', verificationCode);
                 
                 // Send code via EmailJS
-                await emailjs.send("service_t1xt52i", "template_xa87h1l", {
-                    to_email: email,
-                    code: verificationCode
-                });
-                
-                alert("Code sent! Check your email for the verification code from DPay.");
+                try {
+                    await emailjs.send("service_t1xt52i", "template_xa87h1l", {
+                        to_email: email,
+                        code: verificationCode
+                    });
+                    alert("Code sent! Check your email for the verification code from DPay.");
+                } catch (emailError) {
+                    console.error("EmailJS Error:", emailError);
+                    alert("Email send failed. Your code is: " + verificationCode + ". Enter it on the verify page.");
+                }
                 
                 // Redirect to verification page
                 window.location.href = "verify.html";
