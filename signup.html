@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DPay | Join</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/emailjs.min.js"></script>
 </head>
 <body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6">
     <div class="w-full max-w-md text-center">
         <h1 class="text-4xl font-black mb-2 uppercase italic text-blue-500">DPAY.</h1>
         <p class="text-slate-500 text-sm mb-10">Start selling crypto for Naira today.</p>
 
-        <div class="space-y-4 text-left">
+        <div class="space-y-4 text-left" id="signup-form">
             <input type="email" id="email" placeholder="Gmail Address" 
                 class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
             
@@ -25,7 +26,13 @@
                 class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all mt-4">
                 Sign Up
             </button>
-        </div>
+
+            <div id="code-section" class="hidden space-y-4 text-left mt-4">
+                <input type="text" id="verification-code" placeholder="Enter verification code" 
+                    class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
+                <button onclick="verifyCode()" id="verify-btn" 
+                    class="w-full bg-green-600 p-5 rounded-2xl font-black uppercase">Verify Code</button>
+            </div>
 
         <p class="mt-10 text-sm text-slate-500 font-medium">
             Already have an account? <a href="login.html" class="text-blue-500 font-bold underline">Sign In</a>
@@ -50,6 +57,9 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        // Initialize EmailJS - Replace with your public key
+        emailjs.init("YOUR_PUBLIC_KEY");
+
         window.handleSignup = async () => {
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
@@ -68,17 +78,39 @@
                 // Create user in Firebase
                 const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
                 
-                // Send Verification Email
-                await sendEmailVerification(userCredential.user);
+                // Generate verification code
+                const verificationCode = Math.random().toString(36).substring(2, 8).toUpperCase();
                 
-                alert("Success! Check your Gmail for the verification link from DPay.");
-                window.location.href = "login.html";
+                // Store code for verification
+                window.generatedCode = verificationCode;
+                
+                // Send code via EmailJS - Replace with your service and template IDs
+                await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+                    to_email: email,
+                    code: verificationCode
+                });
+                
+                alert("Verification code sent to " + email + ". Enter it below to complete signup.");
+                
+                // Hide signup form, show code section
+                document.getElementById('signup-form').style.display = 'none';
+                document.getElementById('code-section').classList.remove('hidden');
             } catch (e) {
-                // Handle errors like 'email-already-in-use'
+                // Handle errors
                 console.error("Firebase Error:", e);
                 alert("Error: " + e.code + " - " + e.message);
                 btn.innerText = "SIGN UP";
                 btn.disabled = false;
+            }
+        };
+
+        window.verifyCode = async () => {
+            const enteredCode = document.getElementById('verification-code').value.toUpperCase();
+            if (enteredCode === window.generatedCode) {
+                alert("Verification successful! You can now log in.");
+                window.location.href = "login.html";
+            } else {
+                alert("Invalid code. Please try again.");
             }
         };
     </script>

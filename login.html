@@ -17,15 +17,11 @@
             <input type="email" id="email" placeholder="Email" class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
             <input type="password" id="pass" placeholder="Password" class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
             <button onclick="handleLogin()" id="btn" class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase">Sign In</button>
-            <div id="resend" class="hidden text-center mt-4">
-                <p class="text-sm text-slate-400 mb-2">Didn't receive the email? Check your spam folder or</p>
-                <button onclick="resendVerification()" class="text-blue-500 underline">Resend verification email</button>
-            </div>
         </div>
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // VERIFIED CONFIG - PLEASE DO NOT CHANGE THESE CHARACTERS
         const firebaseConfig = { 
@@ -45,20 +41,6 @@
             btn.innerText = "CHECKING...";
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value);
-                if (userCredential.user.emailVerified) { window.location.href = "dashboard.html"; }
-                else { 
-                    document.getElementById('resend').classList.remove('hidden');
-                    alert("Please verify your email first! Check your Gmail for the DPay verification link."); 
-                    btn.innerText = "SIGN IN"; 
-                }
+                window.location.href = "dashboard.html";
             } catch (e) { alert(e.message); btn.innerText = "SIGN IN"; }
-        };
-
-        window.resendVerification = async () => {
-            try {
-                await sendEmailVerification(auth.currentUser);
-                alert("Verification email resent! Check your Gmail.");
-            } catch (e) {
-                alert("Error resending: " + e.message);
-            }
         };
