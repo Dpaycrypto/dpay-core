@@ -4,89 +4,231 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DPay | Crypto</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { 
-            background: linear-gradient(135deg, #0a4d2e 0%, #052e1c 100%); 
-            color: white; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0B0E11;
+            color: #FFFFFF;
             min-height: 100vh;
+            padding: 24px;
         }
-        .card { 
-            background: rgba(255, 255, 255, 0.95); 
-            border-radius: 1rem; 
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #333;
+
+        .container {
+            max-width: 560px;
+            margin: 0 auto;
         }
-        .btn-primary { 
-            background: linear-gradient(135deg, #0a4d2e 0%, #0d6b3f 100%); 
-            color: white; 
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
         }
-        .btn-secondary { 
-            background: rgba(10, 77, 46, 0.1); 
-            color: #0a4d2e; 
+
+        .back-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid #1E293B;
+            background: #161B22;
+            color: #306AF1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #FFFFFF;
+        }
+
+        .section-title {
+            color: #94A3B8;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 12px;
+        }
+
+        .card {
+            background: #161B22;
+            border: 1px solid #1E293B;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 18px;
+        }
+
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .asset-btn {
+            border: 1px solid #1E293B;
+            background: #0f141c;
+            border-radius: 14px;
+            padding: 14px;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .asset-btn:hover {
+            border-color: #306AF1;
+            transform: translateY(-1px);
+        }
+
+        .asset-btn.active {
+            border-color: #306AF1;
+            box-shadow: 0 0 0 1px #306AF1 inset;
+            background: rgba(48, 106, 241, 0.12);
+        }
+
+        .asset-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .asset-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .asset-symbol {
+            color: #94A3B8;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .rate-box {
+            background: #161B22;
+            border: 1px solid #1E293B;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 28px;
+        }
+
+        .rate-value {
+            color: #FFFFFF;
+            font-size: 34px;
+            font-weight: 900;
+            margin-top: 8px;
+        }
+
+        .rate-note {
+            color: #94A3B8;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .transfer-btn {
+            width: 100%;
+            border: none;
+            border-radius: 14px;
+            padding: 18px;
+            background: #306AF1;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .transfer-btn:hover {
+            filter: brightness(1.08);
+            box-shadow: 0 12px 28px rgba(48, 106, 241, 0.35);
+        }
+
+        .transfer-btn:active {
+            transform: translateY(1px);
+        }
+
+        @media (max-width: 560px) {
+            .asset-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body class="p-6">
-    <div class="flex items-center gap-4 mb-8">
-        <a href="dashboard.html" class="w-10 h-10 card rounded-full flex items-center justify-center"><i class="fas fa-arrow-left" style="color: #10b981;"></i></a>
-        <h1 class="text-2xl font-bold">Crypto Services</h1>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a href="dashboard.html" class="back-btn" aria-label="Back to dashboard">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="title">Crypto</h1>
+        </div>
+
+        <div class="section-title">Select Asset</div>
+        <div class="card">
+            <div class="asset-grid">
+                <button class="asset-btn active" type="button" onclick="selectAsset('BTC', 162500000, this)">
+                    <div class="asset-row">
+                        <i class="fab fa-bitcoin" style="color:#f7931a;"></i>
+                        <span class="asset-name">Bitcoin</span>
+                    </div>
+                    <div class="asset-symbol">BTC</div>
+                </button>
+                <button class="asset-btn" type="button" onclick="selectAsset('ETH', 8700000, this)">
+                    <div class="asset-row">
+                        <i class="fab fa-ethereum" style="color:#627eea;"></i>
+                        <span class="asset-name">Ethereum</span>
+                    </div>
+                    <div class="asset-symbol">ETH</div>
+                </button>
+                <button class="asset-btn" type="button" onclick="selectAsset('USDT', 1600, this)">
+                    <div class="asset-row">
+                        <i class="fas fa-coins" style="color:#26a17b;"></i>
+                        <span class="asset-name">Tether</span>
+                    </div>
+                    <div class="asset-symbol">USDT</div>
+                </button>
+            </div>
+        </div>
+
+        <div class="section-title">Market Rate</div>
+        <div class="rate-box">
+            <div style="color:#94A3B8; font-size:13px; font-weight:700;">Current Exchange Rate (NGN)</div>
+            <div id="marketRate" class="rate-value">1 BTC = NGN 162,500,000</div>
+            <div class="rate-note">Rates update periodically and may change before final confirmation.</div>
+        </div>
+
+        <button class="transfer-btn" type="button" onclick="transferToWallet()">Transfer to Wallet</button>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 mb-8">
-        <div class="card p-6 text-center">
-            <i class="fab fa-bitcoin text-4xl text-orange-500 mb-4"></i>
-            <h3 class="text-lg font-bold mb-2">Buy Crypto</h3>
-            <p class="text-sm text-gray-400 mb-4">Purchase Bitcoin, Ethereum, and more</p>
-            <button class="btn-primary py-2 px-4 rounded">Buy Now</button>
-        </div>
-        <div class="card p-6 text-center">
-            <i class="fas fa-exchange-alt text-4xl text-blue-500 mb-4"></i>
-            <h3 class="text-lg font-bold mb-2">Trade Crypto</h3>
-            <p class="text-sm text-gray-400 mb-4">Exchange cryptocurrencies</p>
-            <button class="btn-secondary py-2 px-4 rounded">Trade</button>
-        </div>
-        <div class="card p-6 text-center">
-            <i class="fas fa-wallet text-4xl text-green-500 mb-4"></i>
-            <h3 class="text-lg font-bold mb-2">My Wallet</h3>
-            <p class="text-sm text-gray-400 mb-4">View your crypto holdings</p>
-            <button class="btn-secondary py-2 px-4 rounded">View Wallet</button>
-        </div>
-        <div class="card p-6 text-center">
-            <i class="fas fa-chart-line text-4xl text-purple-500 mb-4"></i>
-            <h3 class="text-lg font-bold mb-2">Market Data</h3>
-            <p class="text-sm text-gray-400 mb-4">Real-time crypto prices</p>
-            <button class="btn-secondary py-2 px-4 rounded">View Prices</button>
-        </div>
-    </div>
+    <script>
+        let selectedAsset = 'BTC';
 
-    <div class="card p-6">
-        <h3 class="text-lg font-bold mb-4">Popular Cryptocurrencies</h3>
-        <div class="space-y-3">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <i class="fab fa-bitcoin text-orange-500"></i>
-                    <span>Bitcoin (BTC)</span>
-                </div>
-                <span>$43,250.00</span>
-            </div>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <i class="fab fa-ethereum text-blue-500"></i>
-                    <span>Ethereum (ETH)</span>
-                </div>
-                <span>$2,650.00</span>
-            </div>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <i class="fab fa-tether text-green-500"></i>
-                    <span>Tether (USDT)</span>
-                </div>
-                <span>$1.00</span>
-            </div>
-        </div>
-    </div>
+        function formatNaira(value) {
+            return new Intl.NumberFormat('en-NG').format(value);
+        }
+
+        window.selectAsset = function(asset, rate, element) {
+            selectedAsset = asset;
+            document.querySelectorAll('.asset-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('marketRate').innerText = `1 ${asset} = NGN ${formatNaira(rate)}`;
+        };
+
+        window.transferToWallet = function() {
+            alert(`Transfer started for ${selectedAsset}. Please complete wallet transfer details on the next step.`);
+        };
+    </script>
 </body>
-</html></content>
-<parameter name="filePath">c:\Users\user\dpay-core\crypto.html
+</html>

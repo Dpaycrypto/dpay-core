@@ -7,21 +7,52 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #05070a; color: white; }
-        .card-glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        body { background: #0B0E11; color: #FFFFFF; }
+        .card { background: #161B22; border: 1px solid #1E293B; }
+        .muted { color: #94A3B8; }
     </style>
 </head>
 <body class="p-6">
-    <div class="flex items-center gap-4 mb-8">
-        <a href="dashboard.html" class="w-10 h-10 card-glass rounded-full flex items-center justify-center"><i class="fas fa-arrow-left text-blue-500"></i></a>
-        <h1 class="text-2xl font-bold">Add Funds</h1>
+    <div class="max-w-xl mx-auto">
+        <div class="flex items-center gap-4 mb-8">
+            <a href="dashboard.html" class="w-10 h-10 card rounded-full flex items-center justify-center"><i class="fas fa-arrow-left" style="color:#306AF1;"></i></a>
+            <h1 class="text-2xl font-bold">Add Funds</h1>
+        </div>
+
+        <div class="card p-8 rounded-[2rem] text-center mb-6">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl" style="background: rgba(48,106,241,0.15); color:#306AF1;"><i class="fas fa-wallet"></i></div>
+            <p class="muted text-xs mb-1">Your USDT Address (BEP20)</p>
+            <p id="usdt-address" class="text-[11px] font-mono break-all p-3 rounded-xl border mb-4" style="color:#FFFFFF; background:#0f141b; border-color:#1E293B;">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</p>
+            <button onclick="copyAddress()" class="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest" style="background:#306AF1; color:#fff;">Copy Address</button>
+        </div>
     </div>
 
-    <div class="card-glass p-8 rounded-[2.5rem] text-center mb-6">
-        <div class="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-blue-500 text-2xl"><i class="fas fa-wallet"></i></div>
-        <p class="text-slate-500 text-xs mb-1">Your USDT Address (BEP20)</p>
-        <p class="text-[11px] font-mono text-blue-400 break-all bg-black/40 p-3 rounded-xl border border-white/5 mb-4">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</p>
-        <button class="w-full bg-blue-600 py-4 rounded-2xl font-black text-xs uppercase tracking-widest">Copy Address</button>
-    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4",
+            authDomain: "dpay-core.firebaseapp.com",
+            projectId: "dpay-core",
+            storageBucket: "dpay-core.firebasestorage.app",
+            messagingSenderId: "415239564375",
+            appId: "1:415239564375:web:ac372f11b7243c21a90712"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.href = "login.html";
+        });
+
+        window.copyAddress = function() {
+            const address = document.getElementById('usdt-address').innerText;
+            navigator.clipboard.writeText(address)
+                .then(() => alert('Address copied to clipboard'))
+                .catch(() => alert('Copy failed'));
+        };
+    </script>
 </body>
 </html>

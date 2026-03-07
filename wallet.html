@@ -3,58 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay - Join</title>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <title>DPay | Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #0d1117; color: white; }
-        .signup-box { background: #161b22; padding: 30px; border-radius: 12px; border: 1px solid #30363d; width: 320px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:disabled { background-color: #23863680; cursor: not-allowed; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0B0E11;
+            color: #FFFFFF;
+            min-height: 100vh;
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wallet-box {
+            width: 100%;
+            max-width: 420px;
+            background: #161B22;
+            border: 1px solid #1E293B;
+            border-radius: 20px;
+            padding: 24px;
+        }
+        .muted {
+            color: #94A3B8;
+        }
+        .addr {
+            background: #0f141b;
+            border: 1px solid #1E293B;
+            border-radius: 12px;
+            padding: 12px;
+            word-break: break-all;
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            margin-top: 10px;
+            margin-bottom: 16px;
+        }
+        .btn {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            background: #306AF1;
+            color: #FFFFFF;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+        }
+        .btn:hover {
+            filter: brightness(1.08);
+        }
     </style>
 </head>
 <body>
+    <div class="wallet-box" id="wallet-container">
+        <h2 style="margin-top:0; margin-bottom:10px;">Bitcoin Wallet</h2>
+        <p id="btc-balance" class="muted" style="margin-bottom:16px;">Balance: BTC0.00000000</p>
+        <p class="muted" style="margin:0;">Your BTC address:</p>
+        <p id="btc-address" class="addr">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</p>
+        <button onclick="copyAddress()" class="btn">Copy Address</button>
+    </div>
 
-<div class="signup-box" id="wallet-container">
-    <h2>Bitcoin Wallet</h2>
-    <p id="btc-balance" class="mb-4">Balance: ₿0.00000000</p>
-    <p>Your BTC address:</p>
-    <p id="btc-address" class="font-mono bg-[#161b22] p-2 rounded">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</p>
-    <button onclick="copyAddress()" class="mt-4">Copy Address</button>
-</div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4",
+            authDomain: "dpay-core.firebaseapp.com",
+            projectId: "dpay-core",
+            storageBucket: "dpay-core.firebasestorage.app",
+            messagingSenderId: "415239564375",
+            appId: "1:415239564375:web:ac372f11b7243c21a90712"
+        };
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4",
-        authDomain: "dpay-core.firebaseapp.com",
-        projectId: "dpay-core",
-        storageBucket: "dpay-core.firebasestorage.app",
-        messagingSenderId: "415239564375",
-        appId: "1:415239564375:web:ac372f11b7243c21a90712"
-    };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                document.getElementById('btc-balance').innerText = 'Balance: BTC0.00000000';
+            }
+        });
 
-    onAuthStateChanged(auth, user => {
-        if (!user) {
-            window.location.href = 'login.html';
-        } else {
-            // placeholder: fetch actual balance if backend available
-            document.getElementById('btc-balance').innerText = 'Balance: ₿0.00000000';
-        }
-    });
-
-    window.copyAddress = () => {
-        const addr = document.getElementById('btc-address').innerText;
-        navigator.clipboard.writeText(addr)
-            .then(() => alert('Address copied to clipboard'))
-            .catch(() => alert('Copy failed'));
-    };
-</script>
-
+        window.copyAddress = () => {
+            const addr = document.getElementById('btc-address').innerText;
+            navigator.clipboard.writeText(addr)
+                .then(() => alert('Address copied to clipboard'))
+                .catch(() => alert('Copy failed'));
+        };
+    </script>
 </body>
 </html>

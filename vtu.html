@@ -7,61 +7,194 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #05070a; color: white; font-family: sans-serif; }
-        .card-glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
-        .network-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        body {
+            background: #0B0E11;
+            color: #FFFFFF;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+        }
+        .card {
+            background: #161B22;
+            border: 1px solid #1E293B;
+        }
+        .label {
+            color: #94A3B8;
+        }
+        .field {
+            background: #0f141b;
+            border: 1px solid #1E293B;
+            color: #FFFFFF;
+        }
+        .field::placeholder {
+            color: #94A3B8;
+        }
+        .tab-btn {
+            color: #94A3B8;
+            transition: all 0.25s ease;
+        }
+        .tab-btn.active {
+            background: #306AF1;
+            color: #FFFFFF;
+        }
+        .network-btn {
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.2s ease;
+            border: 1px solid #1E293B;
+            background: #161B22;
+        }
+        .network-btn.active {
+            border-color: #306AF1;
+            box-shadow: 0 0 0 1px #306AF1 inset;
+        }
+        .network-btn:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body class="p-6 pb-24">
+    <div class="max-w-2xl mx-auto">
+        <div class="flex items-center gap-4 mb-8">
+            <a href="dashboard.html" class="w-10 h-10 card rounded-full flex items-center justify-center">
+                <i class="fas fa-arrow-left" style="color:#306AF1;"></i>
+            </a>
+            <h1 class="text-2xl font-bold">Bills & VTU</h1>
+        </div>
 
-    <div class="flex items-center gap-4 mb-8">
-        <a href="dashboard.html" class="w-10 h-10 card-glass rounded-full flex items-center justify-center">
-            <i class="fas fa-arrow-left text-blue-500"></i>
-        </a>
-        <h1 class="text-2xl font-bold">Bills & VTU</h1>
+        <div class="flex card p-1 rounded-2xl mb-8">
+            <button id="airtimeTab" class="tab-btn flex-1 py-3 rounded-xl text-xs font-black uppercase active" onclick="switchTab('airtime')">Airtime</button>
+            <button id="dataTab" class="tab-btn flex-1 py-3 rounded-xl text-xs font-black uppercase" onclick="switchTab('data')">Data Bundle</button>
+        </div>
+
+        <p class="text-[10px] font-bold label uppercase tracking-widest mb-4 ml-2">Select Provider</p>
+        <div class="grid grid-cols-4 gap-3 mb-8" id="networkButtons">
+            <div class="network-btn p-2 rounded-2xl text-center" onclick="selectNetwork('MTN', this)">
+                <div class="w-10 h-10 bg-yellow-400 rounded-xl mx-auto mb-1 flex items-center justify-center text-black font-black text-[10px]">MTN</div>
+            </div>
+            <div class="network-btn p-2 rounded-2xl text-center" onclick="selectNetwork('Airtel', this)">
+                <div class="w-10 h-10 bg-red-600 rounded-xl mx-auto mb-1 flex items-center justify-center text-white font-black text-[10px]">Airtel</div>
+            </div>
+            <div class="network-btn p-2 rounded-2xl text-center" onclick="selectNetwork('Glo', this)">
+                <div class="w-10 h-10 bg-green-600 rounded-xl mx-auto mb-1 flex items-center justify-center text-white font-black text-[10px]">Glo</div>
+            </div>
+            <div class="network-btn p-2 rounded-2xl text-center" onclick="selectNetwork('9mobile', this)">
+                <div class="w-10 h-10 bg-black rounded-xl mx-auto mb-1 flex items-center justify-center text-white font-black text-[10px]">9mob</div>
+            </div>
+        </div>
+
+        <div id="airtimeForm" class="space-y-6">
+            <div>
+                <label class="text-[10px] uppercase tracking-widest label font-bold mb-2 block">Phone Number</label>
+                <input type="tel" id="airtimePhone" placeholder="08012345678" class="w-full field rounded-2xl py-4 px-5 focus:outline-none focus:border-[#306AF1] transition-all">
+            </div>
+
+            <div>
+                <label class="text-[10px] uppercase tracking-widest label font-bold mb-2 block">Amount (Naira)</label>
+                <input type="number" id="airtimeAmount" placeholder="500" class="w-full field rounded-2xl py-4 px-5 focus:outline-none focus:border-[#306AF1] transition-all">
+            </div>
+
+            <div class="card p-4 rounded-2xl flex justify-between items-center text-sm">
+                <span class="label">Transaction Fee</span>
+                <span class="font-bold">N0.00</span>
+            </div>
+
+            <button onclick="purchaseAirtime()" class="w-full bg-[#306AF1] hover:brightness-110 text-white text-center font-black py-5 rounded-2xl shadow-xl shadow-blue-900/30 active:scale-95 transition-all tracking-widest uppercase text-xs">
+                Purchase Airtime
+            </button>
+        </div>
+
+        <div id="dataForm" class="space-y-6" style="display:none;">
+            <div>
+                <label class="text-[10px] uppercase tracking-widest label font-bold mb-2 block">Phone Number</label>
+                <input type="tel" id="dataPhone" placeholder="08012345678" class="w-full field rounded-2xl py-4 px-5 focus:outline-none focus:border-[#306AF1] transition-all">
+            </div>
+
+            <div>
+                <label class="text-[10px] uppercase tracking-widest label font-bold mb-2 block">Select Data Plan</label>
+                <select id="dataPlan" class="w-full field rounded-2xl py-4 px-5 focus:outline-none focus:border-[#306AF1] transition-all">
+                    <option value="">Choose a plan...</option>
+                    <option value="500mb:200">500MB - N200</option>
+                    <option value="1gb:350">1GB - N350</option>
+                    <option value="2gb:650">2GB - N650</option>
+                    <option value="5gb:1500">5GB - N1,500</option>
+                    <option value="10gb:2800">10GB - N2,800</option>
+                    <option value="20gb:5000">20GB - N5,000</option>
+                </select>
+            </div>
+
+            <div class="card p-4 rounded-2xl flex justify-between items-center text-sm">
+                <span class="label">Transaction Fee</span>
+                <span class="font-bold">N0.00</span>
+            </div>
+
+            <button onclick="purchaseData()" class="w-full bg-[#306AF1] hover:brightness-110 text-white text-center font-black py-5 rounded-2xl shadow-xl shadow-blue-900/30 active:scale-95 transition-all tracking-widest uppercase text-xs">
+                Purchase Data Bundle
+            </button>
+        </div>
     </div>
 
-    <div class="flex bg-slate-900 p-1 rounded-2xl mb-8">
-        <button class="flex-1 py-3 rounded-xl bg-blue-600 text-xs font-black uppercase">Airtime</button>
-        <button class="flex-1 py-3 rounded-xl text-slate-500 text-xs font-black uppercase">Data Bundle</button>
-    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 ml-2">Select Provider</p>
-    <div class="grid grid-cols-4 gap-3 mb-8">
-        <div class="network-btn card-glass p-2 rounded-2xl text-center border border-transparent active:scale-95 transition-all">
-            <div class="w-10 h-10 bg-yellow-400 rounded-xl mx-auto mb-1 flex items-center justify-center text-black font-black text-[10px]">MTN</div>
-        </div>
-        <div class="network-btn card-glass p-2 rounded-2xl text-center border border-transparent active:scale-95 transition-all">
-            <div class="w-10 h-10 bg-red-600 rounded-xl mx-auto mb-1 flex items-center justify-center text-white font-black text-[10px]">Airtel</div>
-        </div>
-        <div class="network-btn card-glass p-2 rounded-2xl text-center border border-transparent active:scale-95 transition-all">
-            <div class="w-10 h-10 bg-green-600 rounded-xl mx-auto mb-1 flex items-center justify-center text-white font-black text-[10px]">Glo</div>
-        </div>
-        <div class="network-btn card-glass p-2 rounded-2xl text-center border border-transparent active:scale-95 transition-all">
-            <div class="w-10 h-10 bg-black rounded-xl mx-auto mb-1 flex items-center justify-center text-white font-black text-[10px]">9mob</div>
-        </div>
-    </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4",
+            authDomain: "dpay-core.firebaseapp.com",
+            projectId: "dpay-core",
+            storageBucket: "dpay-core.firebasestorage.app",
+            messagingSenderId: "415239564375",
+            appId: "1:415239564375:web:ac372f11b7243c21a90712"
+        };
 
-    <div class="space-y-6">
-        <div>
-            <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 block">Phone Number</label>
-            <input type="tel" placeholder="08012345678" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-5 focus:outline-none focus:border-blue-500 transition-all">
-        </div>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        <div>
-            <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 block">Amount (₦)</label>
-            <input type="number" placeholder="500" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-5 focus:outline-none focus:border-blue-500 transition-all">
-        </div>
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.href = "login.html";
+        });
 
-        <div class="card-glass p-4 rounded-2xl flex justify-between items-center text-sm">
-            <span class="text-slate-500">Transaction Fee</span>
-            <span class="font-bold">₦0.00</span>
-        </div>
+        let selectedNetwork = "";
 
-        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-black py-5 rounded-2xl shadow-xl shadow-blue-900/30 active:scale-95 transition-all tracking-widest uppercase text-xs">
-            Purchase Airtime
-        </button>
-    </div>
+        window.switchTab = function(tab) {
+            document.getElementById('airtimeTab').classList.toggle('active', tab === 'airtime');
+            document.getElementById('dataTab').classList.toggle('active', tab === 'data');
+            document.getElementById('airtimeForm').style.display = tab === 'airtime' ? 'block' : 'none';
+            document.getElementById('dataForm').style.display = tab === 'data' ? 'block' : 'none';
+        };
 
+        window.selectNetwork = function(network, element) {
+            selectedNetwork = network;
+            document.querySelectorAll('.network-btn').forEach((btn) => btn.classList.remove('active'));
+            element.classList.add('active');
+        };
+
+        window.purchaseAirtime = function() {
+            const phone = document.getElementById('airtimePhone').value;
+            const amount = Number(document.getElementById('airtimeAmount').value || 0);
+
+            if (!selectedNetwork) return alert('Please select a network provider');
+            if (!phone || !amount) return alert('Please fill in all fields');
+            if (phone.length < 11) return alert('Please enter a valid phone number');
+            if (amount < 50) return alert('Minimum amount is N50');
+
+            alert(`Airtime purchase successful!\nNetwork: ${selectedNetwork}\nPhone: ${phone}\nAmount: N${amount}`);
+            document.getElementById('airtimePhone').value = '';
+            document.getElementById('airtimeAmount').value = '';
+        };
+
+        window.purchaseData = function() {
+            const phone = document.getElementById('dataPhone').value;
+            const planSelect = document.getElementById('dataPlan');
+            const plan = planSelect.value;
+
+            if (!selectedNetwork) return alert('Please select a network provider');
+            if (!phone || !plan) return alert('Please fill in all fields');
+            if (phone.length < 11) return alert('Please enter a valid phone number');
+
+            const planText = planSelect.options[planSelect.selectedIndex].text;
+            alert(`Data bundle purchase successful!\nNetwork: ${selectedNetwork}\nPhone: ${phone}\nPlan: ${planText}`);
+            document.getElementById('dataPhone').value = '';
+            document.getElementById('dataPlan').value = '';
+        };
+    </script>
 </body>
 </html>
