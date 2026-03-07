@@ -37,10 +37,52 @@
         const auth = getAuth(app);
 
         window.handleLogin = async () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
             const btn = document.getElementById('btn');
-            btn.innerText = "CHECKING...";
+            
+            if (!email || !pass) {
+                alert("Please enter both email and password");
+                return;
+            }
+            
+            btn.innerText = "SIGNING IN...";
+            btn.disabled = true;
+            
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value);
-                window.location.href = "dashboard.html";
-            } catch (e) { alert(e.message); btn.innerText = "SIGN IN"; }
+                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                const user = userCredential.user;
+                
+                // Check if user has completed OTP verification
+                const isVerified = localStorage.getItem('emailVerified') === 'true';
+                
+                if (!isVerified) {
+                    alert("Please complete email verification first. Check your email for the verification code.");
+                    // Sign out and redirect to verify
+                    await auth.signOut();
+                    window.location.href = "verify.html";
+                    return;
+                }
+                
+            } catch (e) {
+                console.error("Login error:", e);
+                
+                // Handle specific Firebase auth errors
+                if (e.code === 'auth/user-not-found') {
+                    alert("No account found with this email. Please sign up first.");
+                } else if (e.code === 'auth/wrong-password') {
+                    alert("Incorrect password. Please try again.");
+                } else if (e.code === 'auth/invalid-email') {
+                    alert("Invalid email format.");
+                } else if (e.code === 'auth/user-disabled') {
+                    alert("This account has been disabled.");
+                } else if (e.code === 'auth/too-many-requests') {
+                    alert("Too many failed login attempts. Please try again later.");
+                } else {
+                    alert("Login failed: " + e.message);
+                }
+                
+                btn.innerText = "SIGN IN";
+                btn.disabled = false;
+            }
         };

@@ -40,6 +40,9 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    
+    // Disable email verification requirement
+    auth.settings = { appVerificationDisabledForTesting: true };
 
     window.handleSignup = async () => {
         const fullName = document.getElementById('fullName').value;
@@ -48,6 +51,11 @@
         const btn = document.getElementById('btn');
 
         if(!fullName || !email || !pass) return alert("Please fill in all fields");
+
+        // Clear any existing verification data
+        localStorage.removeItem('userOTP');
+        localStorage.removeItem('emailVerified');
+        localStorage.removeItem('userName');
 
         // Generate a random 6-digit code for the user
         const otp = Math.floor(100000 + Math.random() * 900000);

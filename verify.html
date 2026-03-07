@@ -39,6 +39,8 @@
             // We use == instead of === to make sure it matches even if one is text
             if (userTyped == correctOTP) { 
                 alert("Success! Welcome to DPay.");
+                localStorage.setItem('emailVerified', 'true'); // Mark as verified
+                localStorage.removeItem('userOTP'); // Clean up OTP
                 window.location.href = "dashboard.html"; 
             } else {
                 alert("Invalid code. Please check your email.");
