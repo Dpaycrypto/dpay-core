@@ -56,18 +56,8 @@
                 const userCredential = await signInWithEmailAndPassword(auth, email, pass);
                 const user = userCredential.user;
                 
-                // Check if user has completed OTP verification
-                const isVerified = localStorage.getItem('emailVerified') === 'true';
-                
-                if (!isVerified) {
-                    alert("Please complete email verification first. Check your email for the verification code.");
-                    // Sign out and redirect to verify
-                    await auth.signOut();
-                    window.location.href = "verify.html";
-                    return;
-                }
-                
-                // If verified, redirect to dashboard
+                // Successfully signed in - redirect to dashboard
+                // Note: OTP verification is only required during signup, not for existing accounts
                 window.location.href = "dashboard.html";
                 
             } catch (e) {
