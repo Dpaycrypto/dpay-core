@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - DPay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0b0e11;
+            --card: #161b22;
+            --border: #1e293b;
+            --text: #ffffff;
+            --muted: #94a3b8;
+            --primary: #306af1;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #ca8a04;
+        }
+
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .title-wrap h1 {
+            font-size: 31px;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+        }
+
+        .title-wrap p {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #0f141b;
+            color: var(--text);
+            padding: 11px 14px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.08);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: transparent;
+        }
+
+        .btn-danger {
+            background: #2a1111;
+            border-color: #4a1b1b;
+            color: #fca5a5;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 7px 12px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            background: #111823;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+        }
+
+        .card h2 {
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+        }
+
+        .field-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 260px;
+            background: #0f141b;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .field span {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .field input {
+            flex: 1;
+            min-width: 100px;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 9px;
+        }
+
+        .alert {
+            margin: 0 0 16px;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid transparent;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #0f2517;
+            border-color: #1f5f32;
+            color: #86efac;
+        }
+
+        .alert-error {
+            background: #2a1111;
+            border-color: #4a1b1b;
+            color: #fca5a5;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #0f141b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        th {
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 11px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .mono {
+            font-family: "Consolas", "Courier New", monospace;
+            font-size: 12px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 5px 9px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-pending {
+            background: #2d260f;
+            color: #fde68a;
+            border: 1px solid #7c6320;
+        }
+
+        .status-completed {
+            background: #0f2517;
+            color: #86efac;
+            border: 1px solid #1f5f32;
+        }
+
+        .link {
+            color: #7db0ff;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            padding: 18px;
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            background: #0f141b;
+        }
+
+        .locked {
+            max-width: 520px;
+            margin: 90px auto;
+            text-align: center;
+            padding: 28px;
+            border-radius: 18px;
+            border: 1px solid #4a1b1b;
+            background: #2a1111;
+        }
+
+        .locked h2 {
+            font-size: 23px;
+            margin-bottom: 9px;
+        }
+
+        .locked p {
+            color: #fecaca;
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .title-wrap h1 {
+                font-size: 26px;
+            }
+
+            .top-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .btn {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app" style="display:none;">
+        <div class="topbar">
+            <div class="title-wrap">
+                <h1>DPay Admin Panel</h1>
+                <p id="adminIdentity">Loading admin session...</p>
+            </div>
+            <div class="top-actions">
+                <a href="dashboard.html" class="btn" style="text-decoration:none;">Back to Dashboard</a>
+                <button type="button" class="btn btn-danger" id="logoutBtn">Sign Out</button>
+            </div>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <div class="grid">
+            <section class="card">
+                <h2>Exchange Rate Controller</h2>
+                <div class="field-row">
+                    <label class="field" for="rateInput">
+                        <span>Naira per 1 USDT</span>
+                        <input type="number" id="rateInput" step="0.01" min="0" placeholder="e.g. 1550">
+                    </label>
+                    <button type="button" class="btn btn-primary" id="saveRateBtn">Save Rate</button>
+                </div>
+                <div class="hint">Stored at <span class="mono">settings/app.nairaPerUsdt</span>. Used during crypto trade approval.</div>
+            </section>
+
+            <section class="card">
+                <h2>User Management</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>UID</th>
+                                <th>Naira Balance</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr><td colspan="5">Loading users...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Crypto Approval Queue</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Email</th>
+                                <th>USDT</th>
+                                <th>Screenshot URL</th>
+                                <th>Transaction Hash</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tradesTableBody">
+                            <tr><td colspan="6">Loading pending trades...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="lockedState" class="locked" style="display:none;">
+        <h2>Admin Access Only</h2>
+        <p>Your account is not authorized to view this page.</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import {
+            getFirestore,
+            collection,
+            doc,
+            getDoc,
+            getDocs,
+            runTransaction,
+            setDoc,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4",
+            authDomain: "dpay-core.firebaseapp.com",
+            projectId: "dpay-core",
+            storageBucket: "dpay-core.firebasestorage.app",
+            messagingSenderId: "415239564375",
+            appId: "1:415239564375:web:ac372f11b7243c21a90712"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const appRoot = document.getElementById("app");
+        const lockedState = document.getElementById("lockedState");
+        const adminIdentity = document.getElementById("adminIdentity");
+        const alertBox = document.getElementById("alertBox");
+        const rateInput = document.getElementById("rateInput");
+        const saveRateBtn = document.getElementById("saveRateBtn");
+        const usersTableBody = document.getElementById("usersTableBody");
+        const tradesTableBody = document.getElementById("tradesTableBody");
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        const SETTINGS_DOC_ID = "app";
+        let currentAdmin = null;
+        let usersCache = [];
+        let tradesCache = [];
+
+        function showAlert(message, type = "success") {
+            alertBox.className = `alert show ${type === "success" ? "alert-success" : "alert-error"}`;
+            alertBox.textContent = message;
+        }
+
+        function hideAlert() {
+            alertBox.className = "alert";
+            alertBox.textContent = "";
+        }
+
+        function parseNumber(value) {
+            if (value === null || value === undefined) {
+                return 0;
+            }
+
+            const cleaned = String(value).replace(/,/g, "").trim();
+            if (cleaned === "") {
+                return 0;
+            }
+
+            const parsed = Number(cleaned);
+            return Number.isFinite(parsed) ? parsed : 0;
+        }
+
+        function formatNaira(amount) {
+            return new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(parseNumber(amount));
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        async function loadExchangeRate() {
+            const settingsRef = doc(db, "settings", SETTINGS_DOC_ID);
+            const settingsSnap = await getDoc(settingsRef);
+            if (settingsSnap.exists()) {
+                const data = settingsSnap.data();
+                const rate = parseNumber(data.nairaPerUsdt || data.usdtRate || data.rate);
+                rateInput.value = rate > 0 ? rate : "";
+            } else {
+                rateInput.value = "";
+            }
+        }
+
+        async function saveExchangeRate() {
+            hideAlert();
+            const rate = parseNumber(rateInput.value);
+            if (rate <= 0) {
+                showAlert("Enter a valid Naira per USDT rate greater than 0.", "error");
+                return;
+            }
+
+            saveRateBtn.disabled = true;
+            try {
+                const settingsRef = doc(db, "settings", SETTINGS_DOC_ID);
+                await setDoc(settingsRef, {
+                    nairaPerUsdt: rate,
+                    updatedAt: serverTimestamp(),
+                    updatedBy: currentAdmin.uid
+                }, { merge: true });
+                showAlert(`Exchange rate updated to ${rate} NGN per USDT.`, "success");
+            } catch (error) {
+                console.error("Failed to save exchange rate:", error);
+                showAlert(`Failed to save exchange rate: ${error.message}`, "error");
+            } finally {
+                saveRateBtn.disabled = false;
+            }
+        }
+
+        function renderUsers() {
+            if (!usersCache.length) {
+                usersTableBody.innerHTML = "<tr><td colspan=\"5\">No users found.</td></tr>";
+                return;
+            }
+
+            usersTableBody.innerHTML = usersCache.map((item) => {
+                const email = item.email || "No email";
+                const name = item.fullName || "Unnamed User";
+                const nairaBalance = formatNaira(item.nairaBalance || 0);
+
+                return `
+                    <tr>
+                        <td>${escapeHtml(name)}</td>
+                        <td>${escapeHtml(email)}</td>
+                        <td class="mono">${escapeHtml(item.uid)}</td>
+                        <td>${nairaBalance}</td>
+                        <td>
+                            <button type="button" class="btn" data-credit-uid="${escapeHtml(item.uid)}" data-credit-email="${escapeHtml(email)}">
+                                Manual Credit
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        async function loadUsers() {
+            usersTableBody.innerHTML = "<tr><td colspan=\"5\">Loading users...</td></tr>";
+            try {
+                const usersSnap = await getDocs(collection(db, "users"));
+                usersCache = usersSnap.docs.map((snapshot) => {
+                    const data = snapshot.data();
+                    return {
+                        uid: snapshot.id,
+                        fullName: data.fullName || "",
+                        email: data.email || "",
+                        nairaBalance: parseNumber(data.nairaBalance || 0)
+                    };
+                });
+
+                usersCache.sort((a, b) => a.email.localeCompare(b.email));
+                renderUsers();
+            } catch (error) {
+                console.error("Failed to load users:", error);
+                usersTableBody.innerHTML = `<tr><td colspan=\"5\">Failed to load users: ${escapeHtml(error.message)}</td></tr>`;
+            }
+        }
+
+        function getTradeEmail(trade) {
+            return trade.userEmail || trade.email || trade.ownerEmail || "No email";
+        }
+
+        function getTradeTxHash(trade) {
+            return trade.transactionHash || trade.txHash || trade.hash || "-";
+        }
+
+        function getScreenshotUrl(trade) {
+            return trade.screenshotUrl || trade.proofUrl || trade.imageUrl || trade.receiptUrl || "";
+        }
+
+        function getTradeStatus(trade) {
+            return String(trade.status || "pending").toLowerCase();
+        }
+
+        function getUsdtAmount(trade) {
+            return parseNumber(trade.usdtAmount || trade.amountUsdt || trade.usdt || trade.amount || trade.usdAmount || 0);
+        }
+
+        function getTradeUserUid(trade) {
+            return trade.userId || trade.uid || trade.ownerId || null;
+        }
+
+        function resolveCreditNaira(trade) {
+            const explicitNaira = parseNumber(trade.nairaAmount || trade.ngnAmount || trade.calculatedNaira);
+            if (explicitNaira > 0) {
+                return explicitNaira;
+            }
+
+            const rate = parseNumber(rateInput.value);
+            const usdtAmount = getUsdtAmount(trade);
+            if (rate > 0 && usdtAmount > 0) {
+                return rate * usdtAmount;
+            }
+
+            return 0;
+        }
+
+        function renderTrades() {
+            if (!tradesCache.length) {
+                tradesTableBody.innerHTML = "<tr><td colspan=\"6\">No pending trades found.</td></tr>";
+                return;
+            }
+
+            tradesTableBody.innerHTML = tradesCache.map((trade) => {
+                const status = getTradeStatus(trade);
+                const statusClass = status === "completed" ? "status-completed" : "status-pending";
+                const screenshotUrl = getScreenshotUrl(trade);
+                const txHash = getTradeTxHash(trade);
+                const usdtValue = getUsdtAmount(trade);
+                const canApprove = status !== "completed";
+
+                return `
+                    <tr>
+                        <td>${escapeHtml(getTradeEmail(trade))}</td>
+                        <td>${escapeHtml(usdtValue ? String(usdtValue) : "-")}</td>
+                        <td>
+                            ${screenshotUrl ? `<a class="link" target="_blank" rel="noopener noreferrer" href="${escapeHtml(screenshotUrl)}">${escapeHtml(screenshotUrl)}</a>` : "-"}
+                        </td>
+                        <td class="mono">${escapeHtml(txHash)}</td>
+                        <td><span class="status-pill ${statusClass}">${escapeHtml(status)}</span></td>
+                        <td>
+                            ${canApprove
+                                ? `<button type="button" class="btn btn-primary" data-approve-trade="${escapeHtml(trade.id)}">Approve</button>`
+                                : "Completed"}
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        async function hydrateTradeEmails(trades) {
+            const uniqueUids = [...new Set(trades.map(getTradeUserUid).filter(Boolean))];
+            const unresolved = uniqueUids.filter((uid) => {
+                const knownUser = usersCache.find((user) => user.uid === uid);
+                return !knownUser;
+            });
+
+            if (!unresolved.length) {
+                return;
+            }
+
+            await Promise.all(unresolved.map(async (uid) => {
+                const userSnap = await getDoc(doc(db, "users", uid));
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    usersCache.push({
+                        uid,
+                        fullName: data.fullName || "",
+                        email: data.email || "",
+                        nairaBalance: parseNumber(data.nairaBalance || 0)
+                    });
+                }
+            }));
+        }
+
+        async function loadPendingTrades() {
+            tradesTableBody.innerHTML = "<tr><td colspan=\"6\">Loading pending trades...</td></tr>";
+            try {
+                const tradesSnap = await getDocs(collection(db, "pending_trades"));
+                const allTrades = tradesSnap.docs.map((snapshot) => ({
+                    id: snapshot.id,
+                    ...snapshot.data()
+                }));
+
+                await hydrateTradeEmails(allTrades);
+
+                tradesCache = allTrades
+                    .map((trade) => {
+                        const uid = getTradeUserUid(trade);
+                        if (!trade.userEmail && uid) {
+                            const knownUser = usersCache.find((user) => user.uid === uid);
+                            if (knownUser && knownUser.email) {
+                                return { ...trade, userEmail: knownUser.email };
+                            }
+                        }
+                        return trade;
+                    })
+                    .filter((trade) => getTradeStatus(trade) !== "completed");
+
+                renderTrades();
+            } catch (error) {
+                console.error("Failed to load pending trades:", error);
+                tradesTableBody.innerHTML = `<tr><td colspan=\"6\">Failed to load trades: ${escapeHtml(error.message)}</td></tr>`;
+            }
+        }
+
+        async function handleManualCredit(userId, userEmail) {
+            hideAlert();
+            const raw = prompt(`Enter credit amount for ${userEmail || userId} (NGN):`);
+            if (raw === null) {
+                return;
+            }
+
+            const amount = parseNumber(raw);
+            if (amount <= 0) {
+                showAlert("Credit amount must be greater than 0.", "error");
+                return;
+            }
+
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const userRef = doc(db, "users", userId);
+                    const userSnap = await transaction.get(userRef);
+                    if (!userSnap.exists()) {
+                        throw new Error("User record does not exist.");
+                    }
+
+                    const currentBalance = parseNumber(userSnap.data().nairaBalance || 0);
+                    const newBalance = currentBalance + amount;
+
+                    transaction.update(userRef, {
+                        nairaBalance: newBalance,
+                        updatedAt: serverTimestamp(),
+                        lastCreditedBy: currentAdmin.uid,
+                        lastCreditAmount: amount
+                    });
+                });
+
+                showAlert(`Credited ${formatNaira(amount)} to ${userEmail || userId}.`, "success");
+                await loadUsers();
+            } catch (error) {
+                console.error("Manual credit failed:", error);
+                showAlert(`Manual credit failed: ${error.message}`, "error");
+            }
+        }
+
+        async function handleApproveTrade(tradeId) {
+            hideAlert();
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const tradeRef = doc(db, "pending_trades", tradeId);
+                    const tradeSnap = await transaction.get(tradeRef);
+                    if (!tradeSnap.exists()) {
+                        throw new Error("Trade does not exist.");
+                    }
+
+                    const tradeData = tradeSnap.data();
+                    const currentStatus = getTradeStatus(tradeData);
+                    if (currentStatus === "completed") {
+                        throw new Error("Trade is already completed.");
+                    }
+
+                    const tradeUserUid = getTradeUserUid(tradeData);
+                    if (!tradeUserUid) {
+                        throw new Error("Trade has no user reference (userId/uid). Cannot credit account.");
+                    }
+
+                    const amountToCredit = resolveCreditNaira(tradeData);
+                    if (amountToCredit <= 0) {
+                        throw new Error("Cannot calculate Naira amount. Ensure trade has USDT amount and exchange rate is set.");
+                    }
+
+                    const userRef = doc(db, "users", tradeUserUid);
+                    const userSnap = await transaction.get(userRef);
+                    if (!userSnap.exists()) {
+                        throw new Error("Target user document not found.");
+                    }
+
+                    const currentBalance = parseNumber(userSnap.data().nairaBalance || 0);
+                    const updatedBalance = currentBalance + amountToCredit;
+
+                    transaction.update(userRef, {
+                        nairaBalance: updatedBalance,
+                        updatedAt: serverTimestamp(),
+                        lastTradeCredit: amountToCredit,
+                        lastTradeApprovedBy: currentAdmin.uid
+                    });
+
+                    transaction.update(tradeRef, {
+                        status: "Completed",
+                        approvedAt: serverTimestamp(),
+                        approvedBy: currentAdmin.uid,
+                        creditedNaira: amountToCredit
+                    });
+                });
+
+                showAlert("Trade approved and user wallet credited successfully.", "success");
+                await Promise.all([loadUsers(), loadPendingTrades()]);
+            } catch (error) {
+                console.error("Trade approval failed:", error);
+                showAlert(`Trade approval failed: ${error.message}`, "error");
+            }
+        }
+
+        usersTableBody.addEventListener("click", async (event) => {
+            const button = event.target.closest("button[data-credit-uid]");
+            if (!button) {
+                return;
+            }
+
+            const uid = button.getAttribute("data-credit-uid");
+            const email = button.getAttribute("data-credit-email");
+            if (!uid) {
+                return;
+            }
+
+            button.disabled = true;
+            try {
+                await handleManualCredit(uid, email || "");
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        tradesTableBody.addEventListener("click", async (event) => {
+            const button = event.target.closest("button[data-approve-trade]");
+            if (!button) {
+                return;
+            }
+
+            const tradeId = button.getAttribute("data-approve-trade");
+            if (!tradeId) {
+                return;
+            }
+
+            if (!confirm("Approve this trade and credit user wallet now?")) {
+                return;
+            }
+
+            button.disabled = true;
+            try {
+                await handleApproveTrade(tradeId);
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        saveRateBtn.addEventListener("click", saveExchangeRate);
+
+        logoutBtn.addEventListener("click", async () => {
+            try {
+                await signOut(auth);
+                window.location.href = "login.html";
+            } catch (error) {
+                showAlert(`Failed to log out: ${error.message}`, "error");
+            }
+        });
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            try {
+                const userDocRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userDocRef);
+                if (!userSnap.exists() || userSnap.data().isAdmin !== true) {
+                    appRoot.style.display = "none";
+                    lockedState.style.display = "block";
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 2000);
+                    return;
+                }
+
+                currentAdmin = user;
+                adminIdentity.textContent = `Signed in as ${user.email || user.uid}`;
+                appRoot.style.display = "block";
+                lockedState.style.display = "none";
+
+                await Promise.all([loadExchangeRate(), loadUsers(), loadPendingTrades()]);
+            } catch (error) {
+                console.error("Admin boot failed:", error);
+                showAlert(`Failed to load admin panel: ${error.message}`, "error");
+            }
+        });
+    </script>
+</body>
+</html>
