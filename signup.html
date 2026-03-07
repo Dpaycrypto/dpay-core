@@ -27,13 +27,6 @@
                 Sign Up
             </button>
 
-            <div id="code-section" class="hidden space-y-4 text-left mt-4">
-                <input type="text" id="verification-code" placeholder="Enter verification code" 
-                    class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
-                <button onclick="verifyCode()" id="verify-btn" 
-                    class="w-full bg-green-600 p-5 rounded-2xl font-black uppercase">Verify Code</button>
-            </div>
-
         <p class="mt-10 text-sm text-slate-500 font-medium">
             Already have an account? <a href="login.html" class="text-blue-500 font-bold underline">Sign In</a>
         </p>
@@ -58,7 +51,7 @@
         const auth = getAuth(app);
 
         // Initialize EmailJS - Replace with your public key
-        emailjs.init("YOUR_PUBLIC_KEY");
+        emailjs.init("sq_PGY4EB2TDai6P0");
 
         window.handleSignup = async () => {
             const email = document.getElementById('email').value;
@@ -82,35 +75,24 @@
                 const verificationCode = Math.random().toString(36).substring(2, 8).toUpperCase();
                 
                 // Store code for verification
-                window.generatedCode = verificationCode;
+                localStorage.setItem('verificationCode', verificationCode);
                 
-                // Send code via EmailJS - Replace with your service and template IDs
-                await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+                // Send code via EmailJS
+                await emailjs.send("service_t1xt52i", "template_xa87h1l", {
                     to_email: email,
                     code: verificationCode
                 });
                 
-                alert("Verification code sent to " + email + ". Enter it below to complete signup.");
+                alert("Code sent! Check your email for the verification code from DPay.");
                 
-                // Hide signup form, show code section
-                document.getElementById('signup-form').style.display = 'none';
-                document.getElementById('code-section').classList.remove('hidden');
+                // Redirect to verification page
+                window.location.href = "verify.html";
             } catch (e) {
                 // Handle errors
                 console.error("Firebase Error:", e);
                 alert("Error: " + e.code + " - " + e.message);
                 btn.innerText = "SIGN UP";
                 btn.disabled = false;
-            }
-        };
-
-        window.verifyCode = async () => {
-            const enteredCode = document.getElementById('verification-code').value.toUpperCase();
-            if (enteredCode === window.generatedCode) {
-                alert("Verification successful! You can now log in.");
-                window.location.href = "login.html";
-            } else {
-                alert("Invalid code. Please try again.");
             }
         };
     </script>

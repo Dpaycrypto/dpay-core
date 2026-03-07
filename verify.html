@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPay | Verify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6">
+    <div class="w-full max-w-md text-center">
+        <h1 class="text-4xl font-black mb-2 uppercase italic text-blue-500">DPAY.</h1>
+        <p class="text-slate-500 text-sm mb-10">Enter your verification code</p>
+
+        <div class="space-y-4 text-left">
+            <input type="text" id="verification-code" placeholder="Enter verification code" 
+                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
+            
+            <button onclick="verifyCode()" id="verify-btn" 
+                class="w-full bg-green-600 p-5 rounded-2xl font-black uppercase">Verify Code</button>
+        </div>
+
+        <p class="mt-10 text-sm text-slate-500 font-medium">
+            <a href="signup.html" class="text-blue-500 font-bold underline">Back to Sign Up</a>
+        </p>
+    </div>
+
+    <script>
+        window.verifyCode = () => {
+            const enteredCode = document.getElementById('verification-code').value.toUpperCase();
+            const storedCode = localStorage.getItem('verificationCode');
+            
+            if (enteredCode === storedCode) {
+                localStorage.removeItem('verificationCode');
+                alert("Verification successful! You can now log in.");
+                window.location.href = "login.html";
+            } else {
+                alert("Invalid code. Please try again.");
+            }
+        };
+    </script>
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\user\dpay-core\verify.html
