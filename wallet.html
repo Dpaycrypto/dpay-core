@@ -3,49 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPay | Assets</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>DPay - Join</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        body { background-color: #05070a; color: white; }
-        .card-glass { background: linear-gradient(145deg, rgba(17, 24, 39, 0.8), rgba(10, 15, 25, 0.8)); border: 1px solid rgba(255,255,255,0.05); }
-        .btc-gradient { background: linear-gradient(135deg, #f7931a, #ffab40); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #0d1117; color: white; }
+        .signup-box { background: #161b22; padding: 30px; border-radius: 12px; border: 1px solid #30363d; width: 320px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:disabled { background-color: #23863680; cursor: not-allowed; }
     </style>
 </head>
-<body class="p-6">
-    <div class="flex justify-between items-center mb-10">
-        <a href="dashboard.html" class="text-slate-400"><i class="fas fa-arrow-left"></i></a>
-        <h1 class="text-xl font-black tracking-tight">Portfolio</h1>
-        <i class="fas fa-chart-line text-blue-500"></i>
-    </div>
+<body>
 
-    <div class="card-glass p-8 rounded-[2.5rem] mb-10 text-center shadow-2xl">
-        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-[0.2em] mb-2">Assets Value</p>
-        <h2 class="text-4xl font-black">$0.00</h2>
-        <p class="text-green-500 text-[10px] font-bold mt-2">+0.00% (24h)</p>
-    </div>
+<div class="signup-box">
+    <h2>Create Account</h2>
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="pass" placeholder="Password">
+    <button id="btn" onclick="handleSignup()">VERIFY MY EMAIL</button>
+</div>
 
-    <div class="space-y-4">
-        <div class="card-glass p-5 rounded-[2rem] flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 btc-gradient rounded-full flex items-center justify-center text-white text-xl shadow-lg shadow-orange-500/20"><i class="fab fa-bitcoin"></i></div>
-                <div><p class="font-bold">Bitcoin</p><p class="text-[10px] text-slate-500 font-bold tracking-widest">BTC</p></div>
-            </div>
-            <div class="text-right">
-                <p class="font-black text-sm">0.00</p>
-                <p id="btc-price" class="text-[10px] text-orange-500 font-bold">Syncing...</p>
-            </div>
-        </div>
-        <div class="card-glass p-5 rounded-[2rem] flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg shadow-green-500/20"><i class="fas fa-dollar-sign"></i></div>
-                <div><p class="font-bold">Tether</p><p class="text-[10px] text-slate-500 font-bold tracking-widest">USDT</p></div>
-            </div>
-            <div class="text-right">
-                <p class="font-black text-sm">0.00</p>
-                <p class="text-[10px] text-green-500 font-bold">$1.00</p>
-            </div>
-        </div>
-    </div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // Your Exact Firebase Config from Screenshot
+    const firebaseConfig = {
+        apiKey: "AIzaSyB3ThhGL7_T5goglQZN5-KlSqeTbSiUvg",
+        authDomain: "dpay-core-ec1e6.firebaseapp.com",
+        projectId: "dpay-core-ec1e6",
+        storageBucket: "dpay-core-ec1e6.firebasestorage.app",
+        messagingSenderId: "259076281817",
+        appId: "1:259076281817:web:9f6826b3e0b86ce0aaf5c8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.handleSignup = async () => {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        const btn = document.getElementById('btn');
+
+        if (!email || !pass) return alert("Please fill in all fields");
+
+        // Generate 6-digit code
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        
+        btn.innerText = "SENDING CODE...";
+        btn.disabled = true;
+
+        try {
+            // 1. Create User (Modular V10 Syntax)
+            await createUserWithEmailAndPassword(auth, email, pass);
+
+            // 2. Send via EmailJS using your IDs
+            emailjs.send(
+                "service_t1xt52i", 
+                "template_nmwdehj", 
+                {
+                    email: email, // Matches {{email}} in your template
+                    otp_code: otp  // Matches {{otp_code}} in your email body
+                }, 
+                "sq_PGY4EB2TDai6P0" // Your Public Key
+            )
+            .then(() => {
+                alert("Verification code sent to " + email);
+                localStorage.setItem("userOTP", otp);
+                window.location.href = "verify.html"; 
+            })
+            .catch((err) => {
+                alert("EmailJS Error: " + JSON.stringify(err));
+                btn.disabled = false;
+                btn.innerText = "VERIFY MY EMAIL";
+            });
+
+        } catch (e) {
+            alert("Signup Error: " + e.message);
+            btn.innerText = "VERIFY MY EMAIL";
+            btn.disabled = false;
+        }
+    };
+</script>
+
 </body>
 </html>
