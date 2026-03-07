@@ -1,32 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DPay | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #06090f; color: white; }
+        .card { background: #161b22; border-radius: 1rem; border: 1px solid #30363d; }
+        .btn-deposit { background: #238636; color: white; }
+        .btn-withdraw { background: #30363d; color: white; }
+        .service-card { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); }
+    </style>
 </head>
-<body class="bg-[#020408] text-white p-6">
-    <nav class="flex justify-between items-center max-w-lg mx-auto mb-10">
-        <h1 class="text-xl font-bold italic">DPAY</h1>
-        <button onclick="logout()" class="text-[10px] text-slate-500 font-black uppercase">Sign Out</button>
-    </nav>
-    <main class="max-w-lg mx-auto">
-        <div class="bg-slate-900/50 p-10 rounded-[2.5rem] border border-white/5 text-center mb-10">
-            <p id="user-email" class="text-blue-500 text-xs mb-4">Loading...</p>
-            <h3 class="text-5xl font-black">$0.00</h3>
+<body class="p-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <p class="text-xs uppercase tracking-widest text-gray-400">ACCOUNT OVERVIEW</p>
+            <h1 id="user-name" class="text-3xl font-bold">Welcome</h1>
         </div>
-        <a href="sell.html" class="block w-full bg-emerald-600 p-5 rounded-2xl text-center font-black uppercase tracking-widest">Sell Crypto for Naira</a>
-    </main>
+        <a href="profile.html" class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
+            <i class="fas fa-user text-white"></i>
+        </a>
+    </div>
+
+    <!-- Balance Section -->
+    <div class="card p-8 mb-8 text-center">
+        <p class="text-sm text-gray-400 mb-2">Total Balance</p>
+        <h2 class="text-4xl font-bold mb-6">₦0.00</h2>
+        <div class="flex gap-4 justify-center">
+            <a href="deposit.html" class="btn-deposit py-3 px-6 rounded-lg flex items-center gap-2">
+                <i class="fas fa-plus"></i> Deposit
+            </a>
+            <a href="withdraw.html" class="btn-withdraw py-3 px-6 rounded-lg flex items-center gap-2">
+                <i class="fas fa-arrow-up"></i> Withdraw
+            </a>
+        </div>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="grid grid-cols-4 gap-4 mb-8">
+        <a href="vtu.html" class="service-card p-4 rounded-xl text-center">
+            <i class="fas fa-mobile-alt text-2xl text-blue-400 mb-2"></i>
+            <p class="text-xs font-bold">VTU</p>
+        </a>
+        <a href="giftcards.html" class="service-card p-4 rounded-xl text-center">
+            <i class="fas fa-gift text-2xl text-blue-400 mb-2"></i>
+            <p class="text-xs font-bold">Gift Card</p>
+        </a>
+        <a href="crypto.html" class="service-card p-4 rounded-xl text-center">
+            <i class="fab fa-bitcoin text-2xl text-blue-400 mb-2"></i>
+            <p class="text-xs font-bold">Crypto</p>
+        </a>
+        <a href="support.html" class="service-card p-4 rounded-xl text-center">
+            <i class="fas fa-headset text-2xl text-blue-400 mb-2"></i>
+            <p class="text-xs font-bold">Support</p>
+        </a>
+    </div>
+
+    <!-- Activity Section -->
+    <div class="card p-6">
+        <h3 class="text-lg font-bold mb-4">RECENT ACTIVITY</h3>
+        <div class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center">
+            <i class="fas fa-receipt text-4xl text-gray-500 mb-4"></i>
+            <p class="text-gray-400">NO TRANSACTIONS YET</p>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        const firebaseConfig = { apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4", authDomain: "dpay-core.firebaseapp.com", projectId: "dpay-core", storageBucket: "dpay-core.firebasestorage.app", messagingSenderId: "415239564375", appId: "1:415239564375:web:ac372f11b7243c21a90712" };
+
+        const firebaseConfig = { 
+            apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4", 
+            authDomain: "dpay-core.firebaseapp.com", 
+            projectId: "dpay-core", 
+            storageBucket: "dpay-core.firebasestorage.app", 
+            messagingSenderId: "415239564375", 
+            appId: "1:415239564375:web:ac372f11b7243c21a90712" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
         onAuthStateChanged(auth, (user) => { 
-            if (user) { document.getElementById('user-email').innerText = user.email; } 
-            else { window.location.href = "login.html"; } 
+            if (user) { 
+                const userName = localStorage.getItem('userName') || 'User';
+                document.getElementById('user-name').innerText = userName;
+            } 
+            else { 
+                window.location.href = "login.html"; 
+            } 
         });
+
         window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
     </script>
 </body>

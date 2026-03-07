@@ -17,6 +17,7 @@
 
 <div class="container">
     <h2>Join DPay</h2>
+    <input type="text" id="fullName" placeholder="Full Name">
     <input type="email" id="email" placeholder="Email Address">
     <input type="password" id="pass" placeholder="Create Password">
     <button id="btn" onclick="handleSignup()">VERIFY MY EMAIL</button>
@@ -41,11 +42,12 @@
     const auth = getAuth(app);
 
     window.handleSignup = async () => {
+        const fullName = document.getElementById('fullName').value;
         const email = document.getElementById('email').value;
         const pass = document.getElementById('pass').value;
         const btn = document.getElementById('btn');
 
-        if(!email || !pass) return alert("Please fill in all fields");
+        if(!fullName || !email || !pass) return alert("Please fill in all fields");
 
         // Generate a random 6-digit code for the user
         const otp = Math.floor(100000 + Math.random() * 900000);
@@ -70,6 +72,7 @@
             .then(() => {
                 alert("Success! Check your Gmail for the code.");
                 localStorage.setItem("userOTP", otp); // Save code locally to verify on next page
+                localStorage.setItem("userName", fullName); // Save full name for dashboard
                 window.location.href = "verify.html"; // Redirect to verification screen
             });
 
