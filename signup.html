@@ -55,7 +55,6 @@
 
         try {
             // 1. Create the user in Firebase
-            // Note: We use the standalone function call to avoid the 'auth.createUser' error
             await createUserWithEmailAndPassword(auth, email, pass);
 
             // 2. Send the code via EmailJS
@@ -75,6 +74,14 @@
             });
 
         } catch (e) {
+            // handle common auth errors
+            if (e.code === 'auth/email-already-in-use') {
+                alert('That email is already registered. Please log in instead.');
+                // ensure any existing session is signed out so user must re-authenticate
+                try { await auth.signOut(); } catch {};
+                window.location.href = 'login.html';
+                return;
+            }
             alert("Signup Error: " + e.message);
             btn.innerText = "VERIFY MY EMAIL";
             btn.disabled = false;
