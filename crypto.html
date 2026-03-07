@@ -7,15 +7,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #06090f; color: white; }
-        .card { background: #161b22; border-radius: 1rem; border: 1px solid #30363d; }
-        .btn-primary { background: #238636; color: white; }
-        .btn-secondary { background: #30363d; color: white; }
+        body { 
+            background: linear-gradient(135deg, #0a4d2e 0%, #052e1c 100%); 
+            color: white; 
+            min-height: 100vh;
+        }
+        .card { 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 1rem; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #333;
+        }
+        .btn-primary { 
+            background: linear-gradient(135deg, #0a4d2e 0%, #0d6b3f 100%); 
+            color: white; 
+        }
+        .btn-secondary { 
+            background: rgba(10, 77, 46, 0.1); 
+            color: #0a4d2e; 
+        }
     </style>
 </head>
 <body class="p-6">
     <div class="flex items-center gap-4 mb-8">
-        <a href="dashboard.html" class="w-10 h-10 card rounded-full flex items-center justify-center"><i class="fas fa-arrow-left text-blue-500"></i></a>
+        <a href="dashboard.html" class="w-10 h-10 card rounded-full flex items-center justify-center"><i class="fas fa-arrow-left" style="color: #10b981;"></i></a>
         <h1 class="text-2xl font-bold">Crypto Services</h1>
     </div>
 

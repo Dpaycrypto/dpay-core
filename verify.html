@@ -6,17 +6,17 @@
     <title>DPay | Verify</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6">
+<body style="background: linear-gradient(135deg, #0a4d2e 0%, #052e1c 100%); color: white; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px;">
     <div class="w-full max-w-md text-center">
-        <h1 class="text-4xl font-black mb-2 uppercase italic text-blue-500">DPAY.</h1>
-        <p class="text-slate-500 text-sm mb-10">Enter your verification code</p>
+        <h1 style="font-size: 36px; font-weight: 900; margin-bottom: 8px; text-transform: uppercase; font-style: italic; color: #10b981;">DPAY.</h1>
+        <p style="color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 40px;">Enter your verification code</p>
 
         <div class="space-y-4 text-left">
             <input type="text" id="verification-code" placeholder="Enter verification code" 
-                class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-blue-500 transition-all">
+                style="width: 100%; padding: 20px; border-radius: 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); outline: none; color: white; transition: all 0.3s;">
             
             <button onclick="verifyCode()" id="verify-btn" 
-                class="w-full bg-green-600 p-5 rounded-2xl font-black uppercase">Verify Code</button>
+                style="width: 100%; background: linear-gradient(135deg, #0a4d2e 0%, #0d6b3f 100%); color: white; padding: 20px; border-radius: 16px; font-weight: 700; text-transform: uppercase; border: none; cursor: pointer; margin-top: 16px;">Verify Code</button>
         </div>
 
         <p class="mt-10 text-sm text-slate-500 font-medium">

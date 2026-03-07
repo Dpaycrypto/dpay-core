@@ -5,18 +5,18 @@
     <title>DPay | Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#05070a] text-white flex items-center justify-center min-h-screen p-6">
+<body style="background: linear-gradient(135deg, #0a4d2e 0%, #052e1c 100%); color: white; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px;">
     <div class="w-full max-w-md text-center">
-        <h1 class="text-4xl font-black mb-10 italic uppercase">DPAY<span class="text-blue-500">.</span></h1>
+        <h1 class="text-4xl font-black mb-10 italic uppercase">DPAY<span style="color: #10b981;">.</span></h1>
         
         <p class="mb-8 text-sm text-slate-400">
-            Need an account? <a href="signup.html" class="text-blue-500 font-bold underline">Register here</a>
+            Need an account? <a href="signup.html" style="color: #10b981; font-weight: bold; text-decoration: underline;">Register here</a>
         </p>
 
         <div class="space-y-4 text-left">
-            <input type="email" id="email" placeholder="Email" class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
-            <input type="password" id="pass" placeholder="Password" class="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none">
-            <button onclick="handleLogin()" id="btn" class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase">Sign In</button>
+            <input type="email" id="email" placeholder="Email" style="width: 100%; padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); outline: none; color: white;">
+            <input type="password" id="pass" placeholder="Password" style="width: 100%; padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); outline: none; color: white; margin-top: 16px;">
+            <button onclick="handleLogin()" id="btn" style="width: 100%; background: linear-gradient(135deg, #0a4d2e 0%, #0d6b3f 100%); color: white; padding: 20px; border-radius: 16px; font-weight: 700; text-transform: uppercase; border: none; cursor: pointer; margin-top: 16px;">Sign In</button>
         </div>
     </div>
     <script type="module">
