@@ -50,8 +50,12 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Initialize EmailJS - Replace with your public key
-        emailjs.init("sq_PGY4EB2TDai6P0");
+        // Initialize EmailJS
+        try {
+            emailjs.init("sq_PGY4EB2TDai6P0");
+        } catch (e) {
+            console.error("EmailJS init error:", e);
+        }
 
         window.handleSignup = async () => {
             console.log("Sign up button clicked");
