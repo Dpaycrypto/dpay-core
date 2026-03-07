@@ -46,12 +46,20 @@
         };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.getAuth(app);
+        let app, auth;
+        try {
+            app = firebase.initializeApp(firebaseConfig);
+            auth = firebase.getAuth(app);
+            console.log("Firebase initialized");
+        } catch (e) {
+            console.error("Firebase init error:", e);
+            alert("Firebase failed to load. Please disable ad blocker.");
+        }
 
         // Initialize EmailJS
         try {
             emailjs.init("sq_PGY4EB2TDai6P0");
+            console.log("EmailJS initialized");
         } catch (e) {
             console.error("EmailJS init error:", e);
         }
