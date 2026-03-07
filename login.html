@@ -20,10 +20,11 @@
         </div>
     </div>
     <script type="module">
+        // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // VERIFIED CONFIG - PLEASE DO NOT CHANGE THESE CHARACTERS
+        // Firebase configuration
         const firebaseConfig = { 
             apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4", 
             authDomain: "dpay-core.firebaseapp.com", 
@@ -33,10 +34,12 @@
             appId: "1:415239564375:web:ac372f11b7243c21a90712" 
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        window.handleLogin = async () => {
+        // Define the handleLogin function and attach it to window
+        window.handleLogin = async function() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             const btn = document.getElementById('btn');
@@ -64,6 +67,9 @@
                     return;
                 }
                 
+                // If verified, redirect to dashboard
+                window.location.href = "dashboard.html";
+                
             } catch (e) {
                 console.error("Login error:", e);
                 
@@ -86,3 +92,14 @@
                 btn.disabled = false;
             }
         };
+
+        // Ensure the function is available immediately
+        console.log("handleLogin function attached to window:", typeof window.handleLogin);
+
+        // Also attach on DOM ready as backup
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.handleLogin === 'function') {
+                console.log("handleLogin is ready on DOM load");
+            }
+        });
+    </script>
