@@ -255,18 +255,22 @@
         };
 
         function bindLiveRates() {
-            const settingsRef = doc(db, 'settings', 'rates');
+            const ratesDocRef = doc(db, 'settings', 'rates');
 
-            onSnapshot(settingsRef, (snapshot) => {
+            onSnapshot(ratesDocRef, (snapshot) => {
                 if (!snapshot.exists()) {
                     rateStatus.innerText = 'Live rates not found. Using default values.';
                     return;
                 }
 
                 const data = snapshot.data();
-                const btcRate = Number(data.btcToNaira);
-                const ethRate = Number(data.ethToNaira);
-                const usdtRate = Number(data.usdtToNaira);
+                const btc = data.btcToNaira;
+                const usdt = data.usdtToNaira;
+                const eth = data.ethToNaira;
+
+                const btcRate = Number(btc);
+                const usdtRate = Number(usdt);
+                const ethRate = Number(eth);
 
                 if (Number.isFinite(btcRate) && btcRate > 0) {
                     assetRates.BTC = btcRate;

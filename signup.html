@@ -127,9 +127,11 @@
         try {
             // 1. Create the user in Firebase
             const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+            const user = userCredential.user;
+            const userDocRef = doc(db, 'user', user.uid);
 
             // 2. Create profile doc in singular "user" collection
-            await setDoc(doc(db, 'user', userCredential.user.uid), {
+            await setDoc(userDocRef, {
                 fullName,
                 email,
                 phone: '',
