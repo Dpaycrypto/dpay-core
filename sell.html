@@ -58,10 +58,10 @@
             const rateNote = document.getElementById('rate-note');
 
             try {
-                const settingsSnap = await getDoc(doc(db, 'settings', 'app'));
+                const settingsSnap = await getDoc(doc(db, 'settings', 'rates'));
                 if (settingsSnap.exists()) {
                     const data = settingsSnap.data();
-                    const fromAdmin = Number(data.nairaPerUsdt || data.usdtRate || data.rate);
+                    const fromAdmin = Number(data.usdtToNaira || data.nairaPerUsdt || data.usdtRate || data.rate);
                     if (Number.isFinite(fromAdmin) && fromAdmin > 0) {
                         currentRate = fromAdmin;
                     }

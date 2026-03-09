@@ -255,7 +255,7 @@
         };
 
         function bindLiveRates() {
-            const settingsRef = doc(db, 'settings', 'app');
+            const settingsRef = doc(db, 'settings', 'rates');
 
             onSnapshot(settingsRef, (snapshot) => {
                 if (!snapshot.exists()) {
@@ -264,11 +264,9 @@
                 }
 
                 const data = snapshot.data();
-                const cryptoRates = data.cryptoRates || {};
-
-                const btcRate = Number(cryptoRates.BTC || data.btcRate);
-                const ethRate = Number(cryptoRates.ETH || data.ethRate);
-                const usdtRate = Number(cryptoRates.USDT || data.nairaPerUsdt || data.usdtRate || data.rate);
+                const btcRate = Number(data.btcToNaira || data.cryptoRates?.BTC || data.btcRate);
+                const ethRate = Number(data.ethToNaira || data.cryptoRates?.ETH || data.ethRate);
+                const usdtRate = Number(data.usdtToNaira || data.cryptoRates?.USDT || data.nairaPerUsdt || data.usdtRate || data.rate);
 
                 if (Number.isFinite(btcRate) && btcRate > 0) {
                     assetRates.BTC = btcRate;

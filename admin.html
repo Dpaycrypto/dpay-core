@@ -353,7 +353,7 @@
                     </label>
                     <button type="button" class="btn btn-primary" id="saveRateBtn">Save Rate</button>
                 </div>
-                <div class="hint">Stored at <span class="mono">settings/app.cryptoRates</span> and <span class="mono">settings/app.nairaPerUsdt</span> (for USDT compatibility).</div>
+                <div class="hint">Stored at <span class="mono">settings/rates</span> as <span class="mono">btcToNaira</span>, <span class="mono">ethToNaira</span>, <span class="mono">usdtToNaira</span>.</div>
             </section>
 
             <section class="card">
@@ -451,7 +451,7 @@
         const tradesTableBody = document.getElementById("tradesTableBody");
         const logoutBtn = document.getElementById("logoutBtn");
 
-        const SETTINGS_DOC_ID = "app";
+        const SETTINGS_DOC_ID = "rates";
         let currentAdmin = null;
         let usersCache = [];
         let tradesCache = [];
@@ -509,9 +509,9 @@
             const settingsSnap = await getDoc(settingsRef);
             if (settingsSnap.exists()) {
                 const data = settingsSnap.data();
-                const btcRate = parseNumber(data.cryptoRates?.BTC || data.btcRate);
-                const ethRate = parseNumber(data.cryptoRates?.ETH || data.ethRate);
-                const usdtRate = parseNumber(data.cryptoRates?.USDT || data.nairaPerUsdt || data.usdtRate || data.rate);
+                const btcRate = parseNumber(data.btcToNaira || data.cryptoRates?.BTC || data.btcRate);
+                const ethRate = parseNumber(data.ethToNaira || data.cryptoRates?.ETH || data.ethRate);
+                const usdtRate = parseNumber(data.usdtToNaira || data.cryptoRates?.USDT || data.nairaPerUsdt || data.usdtRate || data.rate);
 
                 btcRateInput.value = btcRate > 0 ? btcRate : "";
                 ethRateInput.value = ethRate > 0 ? ethRate : "";
@@ -538,12 +538,9 @@
             try {
                 const settingsRef = doc(db, "settings", SETTINGS_DOC_ID);
                 await setDoc(settingsRef, {
-                    cryptoRates: {
-                        BTC: btcRate,
-                        ETH: ethRate,
-                        USDT: usdtRate
-                    },
-                    nairaPerUsdt: usdtRate,
+                    btcToNaira: btcRate,
+                    ethToNaira: ethRate,
+                    usdtToNaira: usdtRate,
                     updatedAt: serverTimestamp(),
                     updatedBy: currentAdmin.uid
                 }, { merge: true });
