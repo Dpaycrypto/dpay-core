@@ -36,7 +36,7 @@
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDocFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDocFromServer, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Firebase configuration
         const firebaseConfig = { 
@@ -122,6 +122,22 @@
 
                 try {
                     const docSnap = await getDocFromServer(userDocRef);
+                    if (!docSnap.exists()) {
+                        await setDoc(userDocRef, {
+                            email: user.email || email,
+                            fullName: localStorage.getItem('userName') || user.displayName || '',
+                            phone: '',
+                            isAdmin: false,
+                            createdAt: serverTimestamp()
+                        }, { merge: true });
+                        setAdminDebug(`uid: ${user.uid}\npath: user/${user.uid}\ndocExists: false -> created\nisAdmin(raw): false\nredirect: dashboard.html`);
+                        isAdmin = false;
+                        prepareContinue("dashboard.html");
+                        btn.innerText = "Sign In";
+                        btn.disabled = false;
+                        return;
+                    }
+
                     isAdmin = docSnap.exists() && docSnap.data().isAdmin === true;
                     const rawAdminValue = docSnap.exists() ? String(docSnap.data().isAdmin) : 'MISSING_DOC';
                     setAdminDebug(`uid: ${user.uid}\npath: user/${user.uid}\ndocExists: ${docSnap.exists()}\nisAdmin(raw): ${rawAdminValue}\nredirect: ${isAdmin ? 'admin.html' : 'dashboard.html'}`);
