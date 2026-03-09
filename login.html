@@ -16,13 +16,18 @@
         <div class="space-y-4 text-left">
             <input type="email" id="email" placeholder="Email" style="width: 100%; padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); outline: none; color: white;">
             <input type="password" id="pass" placeholder="Password" style="width: 100%; padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); outline: none; color: white; margin-top: 16px;">
+            <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                <button type="button" onclick="handleForgotPassword()" style="background: transparent; border: none; color: #86efac; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0;">
+                    Forgot Password?
+                </button>
+            </div>
             <button onclick="handleLogin()" id="btn" style="width: 100%; background: linear-gradient(135deg, #0a4d2e 0%, #0d6b3f 100%); color: white; padding: 20px; border-radius: 16px; font-weight: 700; text-transform: uppercase; border: none; cursor: pointer; margin-top: 16px;">Sign In</button>
         </div>
     </div>
     <script type="module">
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // Firebase configuration
         const firebaseConfig = { 
@@ -37,6 +42,30 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
+        window.handleForgotPassword = async function() {
+            const email = document.getElementById('email').value.trim();
+
+            if (!email) {
+                alert("Enter your email first, then tap Forgot Password.");
+                return;
+            }
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("Password reset link sent. Check your email inbox/spam.");
+            } catch (e) {
+                console.error("Password reset error:", e);
+
+                if (e.code === 'auth/invalid-email') {
+                    alert("That email format is invalid.");
+                } else if (e.code === 'auth/user-not-found') {
+                    alert("No account exists with that email.");
+                } else {
+                    alert("Could not send reset link: " + e.message);
+                }
+            }
+        };
 
         // Define the handleLogin function and attach it to window
         window.handleLogin = async function() {
@@ -78,7 +107,7 @@
                     alert("Login failed: " + e.message);
                 }
                 
-                btn.innerText = "SIGN IN";
+                btn.innerText = "Sign In";
                 btn.disabled = false;
             }
         };
