@@ -61,7 +61,7 @@
                 const settingsSnap = await getDoc(doc(db, 'settings', 'rates'));
                 if (settingsSnap.exists()) {
                     const data = settingsSnap.data();
-                    const fromAdmin = Number(data.usdtToNaira || data.nairaPerUsdt || data.usdtRate || data.rate);
+                    const fromAdmin = Number(data.usdtToNaira);
                     if (Number.isFinite(fromAdmin) && fromAdmin > 0) {
                         currentRate = fromAdmin;
                     }

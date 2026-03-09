@@ -264,9 +264,9 @@
                 }
 
                 const data = snapshot.data();
-                const btcRate = Number(data.btcToNaira || data.cryptoRates?.BTC || data.btcRate);
-                const ethRate = Number(data.ethToNaira || data.cryptoRates?.ETH || data.ethRate);
-                const usdtRate = Number(data.usdtToNaira || data.cryptoRates?.USDT || data.nairaPerUsdt || data.usdtRate || data.rate);
+                const btcRate = Number(data.btcToNaira);
+                const ethRate = Number(data.ethToNaira);
+                const usdtRate = Number(data.usdtToNaira);
 
                 if (Number.isFinite(btcRate) && btcRate > 0) {
                     assetRates.BTC = btcRate;

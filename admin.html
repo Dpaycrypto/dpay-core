@@ -516,9 +516,9 @@
             const settingsSnap = await getDoc(settingsRef);
             if (settingsSnap.exists()) {
                 const data = settingsSnap.data();
-                const btcRate = parseNumber(data.btcToNaira || data.cryptoRates?.BTC || data.btcRate);
-                const ethRate = parseNumber(data.ethToNaira || data.cryptoRates?.ETH || data.ethRate);
-                const usdtRate = parseNumber(data.usdtToNaira || data.cryptoRates?.USDT || data.nairaPerUsdt || data.usdtRate || data.rate);
+                const btcRate = parseNumber(data.btcToNaira);
+                const ethRate = parseNumber(data.ethToNaira);
+                const usdtRate = parseNumber(data.usdtToNaira);
 
                 btcRateInput.value = btcRate > 0 ? btcRate : "";
                 ethRateInput.value = ethRate > 0 ? ethRate : "";
