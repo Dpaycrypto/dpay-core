@@ -351,6 +351,7 @@
                         <span>Naira per 1 USDT</span>
                         <input type="number" id="usdtRateInput" step="0.01" min="0" placeholder="e.g. 1550">
                     </label>
+                    <button type="button" class="btn" id="initRateBtn">Initialize Rates</button>
                     <button type="button" class="btn btn-primary" id="saveRateBtn">Save Rate</button>
                 </div>
                 <div class="hint">Stored at <span class="mono">settings/rates</span> as <span class="mono">btcToNaira</span>, <span class="mono">ethToNaira</span>, <span class="mono">usdtToNaira</span>.</div>
@@ -446,12 +447,18 @@
         const btcRateInput = document.getElementById("btcRateInput");
         const ethRateInput = document.getElementById("ethRateInput");
         const usdtRateInput = document.getElementById("usdtRateInput");
+        const initRateBtn = document.getElementById("initRateBtn");
         const saveRateBtn = document.getElementById("saveRateBtn");
         const usersTableBody = document.getElementById("usersTableBody");
         const tradesTableBody = document.getElementById("tradesTableBody");
         const logoutBtn = document.getElementById("logoutBtn");
 
         const SETTINGS_DOC_ID = "rates";
+        const DEFAULT_RATES = {
+            BTC: 162500000,
+            ETH: 8700000,
+            USDT: 1550
+        };
         let currentAdmin = null;
         let usersCache = [];
         let tradesCache = [];
@@ -549,6 +556,40 @@
                 console.error("Failed to save exchange rate:", error);
                 showAlert(`Failed to save exchange rate: ${error.message}`, "error");
             } finally {
+                saveRateBtn.disabled = false;
+            }
+        }
+
+        async function initializeDefaultRates() {
+            hideAlert();
+
+            if (!currentAdmin) {
+                showAlert("Admin session not ready yet. Try again.", "error");
+                return;
+            }
+
+            initRateBtn.disabled = true;
+            saveRateBtn.disabled = true;
+            try {
+                const settingsRef = doc(db, "settings", SETTINGS_DOC_ID);
+                await setDoc(settingsRef, {
+                    btcToNaira: DEFAULT_RATES.BTC,
+                    ethToNaira: DEFAULT_RATES.ETH,
+                    usdtToNaira: DEFAULT_RATES.USDT,
+                    updatedAt: serverTimestamp(),
+                    updatedBy: currentAdmin.uid
+                }, { merge: true });
+
+                btcRateInput.value = String(DEFAULT_RATES.BTC);
+                ethRateInput.value = String(DEFAULT_RATES.ETH);
+                usdtRateInput.value = String(DEFAULT_RATES.USDT);
+
+                showAlert("Default rates initialized successfully.", "success");
+            } catch (error) {
+                console.error("Failed to initialize rates:", error);
+                showAlert(`Failed to initialize rates: ${error.message}`, "error");
+            } finally {
+                initRateBtn.disabled = false;
                 saveRateBtn.disabled = false;
             }
         }
@@ -872,6 +913,7 @@
         });
 
         saveRateBtn.addEventListener("click", saveExchangeRate);
+        initRateBtn.addEventListener("click", initializeDefaultRates);
 
         logoutBtn.addEventListener("click", async () => {
             try {
