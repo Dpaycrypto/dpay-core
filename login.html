@@ -23,6 +23,11 @@
             </div>
             <button onclick="handleLogin()" id="btn" style="width: 100%; background: linear-gradient(135deg, #0a4d2e 0%, #0d6b3f 100%); color: white; padding: 20px; border-radius: 16px; font-weight: 700; text-transform: uppercase; border: none; cursor: pointer; margin-top: 16px;">Sign In</button>
         </div>
+
+        <div id="adminDebugBox" style="display:none; margin-top:16px; text-align:left; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px;">
+            <div style="font-size:12px; font-weight:700; color:#86efac; margin-bottom:8px;">Admin Check Debug</div>
+            <pre id="adminDebugText" style="margin:0; white-space:pre-wrap; word-break:break-word; font-size:12px; color:#e2e8f0;"></pre>
+        </div>
     </div>
     <script type="module">
         // Firebase imports
@@ -44,6 +49,13 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+
+        function setAdminDebug(text) {
+            const box = document.getElementById('adminDebugBox');
+            const textEl = document.getElementById('adminDebugText');
+            box.style.display = 'block';
+            textEl.textContent = text;
+        }
 
         window.handleForgotPassword = async function() {
             const email = document.getElementById('email').value.trim();
@@ -82,6 +94,7 @@
             
             btn.innerText = "SIGNING IN...";
             btn.disabled = true;
+            setAdminDebug('Signing in...');
             
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, pass);
@@ -89,11 +102,16 @@
                 const userDocRef = doc(db, 'user', user.uid);
                 let isAdmin = false;
 
+                setAdminDebug(`uid: ${user.uid}\npath: user/${user.uid}\nstep: signed in, checking admin doc from server...`);
+
                 try {
                     const docSnap = await getDocFromServer(userDocRef);
                     isAdmin = docSnap.exists() && docSnap.data().isAdmin === true;
+                    const rawAdminValue = docSnap.exists() ? String(docSnap.data().isAdmin) : 'MISSING_DOC';
+                    setAdminDebug(`uid: ${user.uid}\npath: user/${user.uid}\ndocExists: ${docSnap.exists()}\nisAdmin(raw): ${rawAdminValue}\nredirect: ${isAdmin ? 'admin.html' : 'dashboard.html'}`);
                 } catch (docError) {
                     console.warn("Could not read user profile document:", docError);
+                    setAdminDebug(`uid: ${user.uid}\npath: user/${user.uid}\nerrorCode: ${docError?.code || 'unknown'}\nerrorMessage: ${docError?.message || 'unknown'}\nredirect: dashboard.html`);
                     if (docError?.code === "permission-denied") {
                         alert("Signed in, but Firestore rules blocked admin check. Update your Firestore rules for /user/{uid} reads.");
                     }
