@@ -178,21 +178,21 @@
         <div class="section-title">Select Asset</div>
         <div class="card">
             <div class="asset-grid">
-                <button class="asset-btn active" type="button" onclick="selectAsset('BTC', 162500000, this)">
+                <button class="asset-btn active" type="button" onclick="selectAsset('BTC', this)">
                     <div class="asset-row">
                         <i class="fab fa-bitcoin" style="color:#f7931a;"></i>
                         <span class="asset-name">Bitcoin</span>
                     </div>
                     <div class="asset-symbol">BTC</div>
                 </button>
-                <button class="asset-btn" type="button" onclick="selectAsset('ETH', 8700000, this)">
+                <button class="asset-btn" type="button" onclick="selectAsset('ETH', this)">
                     <div class="asset-row">
                         <i class="fab fa-ethereum" style="color:#627eea;"></i>
                         <span class="asset-name">Ethereum</span>
                     </div>
                     <div class="asset-symbol">ETH</div>
                 </button>
-                <button class="asset-btn" type="button" onclick="selectAsset('USDT', 1600, this)">
+                <button class="asset-btn" type="button" onclick="selectAsset('USDT', this)">
                     <div class="asset-row">
                         <i class="fas fa-coins" style="color:#26a17b;"></i>
                         <span class="asset-name">Tether</span>
@@ -239,7 +239,7 @@
             return new Intl.NumberFormat('en-NG').format(value);
         }
 
-        window.selectAsset = function(asset, _rate, element) {
+        window.selectAsset = function(asset, element) {
             selectedAsset = asset;
             document.querySelectorAll('.asset-btn').forEach(btn => btn.classList.remove('active'));
             element.classList.add('active');
@@ -251,7 +251,7 @@
             alert(`Transfer started for ${selectedAsset}. Please complete wallet transfer details on the next step.`);
         };
 
-        async function loadAdminUsdtRate() {
+        async function loadAdminRates() {
             try {
                 const settingsSnap = await getDoc(doc(db, 'settings', 'app'));
                 if (!settingsSnap.exists()) {
@@ -259,22 +259,29 @@
                 }
 
                 const data = settingsSnap.data();
-                const usdtRate = Number(data.nairaPerUsdt || data.usdtRate || data.rate);
-                if (!Number.isFinite(usdtRate) || usdtRate <= 0) {
-                    return;
+                const cryptoRates = data.cryptoRates || {};
+
+                const btcRate = Number(cryptoRates.BTC || data.btcRate);
+                const ethRate = Number(cryptoRates.ETH || data.ethRate);
+                const usdtRate = Number(cryptoRates.USDT || data.nairaPerUsdt || data.usdtRate || data.rate);
+
+                if (Number.isFinite(btcRate) && btcRate > 0) {
+                    assetRates.BTC = btcRate;
+                }
+                if (Number.isFinite(ethRate) && ethRate > 0) {
+                    assetRates.ETH = ethRate;
+                }
+                if (Number.isFinite(usdtRate) && usdtRate > 0) {
+                    assetRates.USDT = usdtRate;
                 }
 
-                assetRates.USDT = usdtRate;
-
-                if (selectedAsset === 'USDT') {
-                    document.getElementById('marketRate').innerText = `1 USDT = NGN ${formatNaira(assetRates.USDT)}`;
-                }
+                document.getElementById('marketRate').innerText = `1 ${selectedAsset} = NGN ${formatNaira(assetRates[selectedAsset] || 0)}`;
             } catch (error) {
-                console.error('Failed to load admin USDT rate:', error);
+                console.error('Failed to load admin crypto rates:', error);
             }
         }
 
-        loadAdminUsdtRate();
+        loadAdminRates();
     </script>
 </body>
 </html>

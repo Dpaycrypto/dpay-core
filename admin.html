@@ -339,13 +339,21 @@
             <section class="card">
                 <h2>Exchange Rate Controller</h2>
                 <div class="field-row">
-                    <label class="field" for="rateInput">
+                    <label class="field" for="btcRateInput">
+                        <span>Naira per 1 BTC</span>
+                        <input type="number" id="btcRateInput" step="0.01" min="0" placeholder="e.g. 162500000">
+                    </label>
+                    <label class="field" for="ethRateInput">
+                        <span>Naira per 1 ETH</span>
+                        <input type="number" id="ethRateInput" step="0.01" min="0" placeholder="e.g. 8700000">
+                    </label>
+                    <label class="field" for="usdtRateInput">
                         <span>Naira per 1 USDT</span>
-                        <input type="number" id="rateInput" step="0.01" min="0" placeholder="e.g. 1550">
+                        <input type="number" id="usdtRateInput" step="0.01" min="0" placeholder="e.g. 1550">
                     </label>
                     <button type="button" class="btn btn-primary" id="saveRateBtn">Save Rate</button>
                 </div>
-                <div class="hint">Stored at <span class="mono">settings/app.nairaPerUsdt</span>. Used during crypto trade approval.</div>
+                <div class="hint">Stored at <span class="mono">settings/app.cryptoRates</span> and <span class="mono">settings/app.nairaPerUsdt</span> (for USDT compatibility).</div>
             </section>
 
             <section class="card">
@@ -435,7 +443,9 @@
         const lockedText = document.getElementById("lockedText");
         const adminIdentity = document.getElementById("adminIdentity");
         const alertBox = document.getElementById("alertBox");
-        const rateInput = document.getElementById("rateInput");
+        const btcRateInput = document.getElementById("btcRateInput");
+        const ethRateInput = document.getElementById("ethRateInput");
+        const usdtRateInput = document.getElementById("usdtRateInput");
         const saveRateBtn = document.getElementById("saveRateBtn");
         const usersTableBody = document.getElementById("usersTableBody");
         const tradesTableBody = document.getElementById("tradesTableBody");
@@ -499,18 +509,28 @@
             const settingsSnap = await getDoc(settingsRef);
             if (settingsSnap.exists()) {
                 const data = settingsSnap.data();
-                const rate = parseNumber(data.nairaPerUsdt || data.usdtRate || data.rate);
-                rateInput.value = rate > 0 ? rate : "";
+                const btcRate = parseNumber(data.cryptoRates?.BTC || data.btcRate);
+                const ethRate = parseNumber(data.cryptoRates?.ETH || data.ethRate);
+                const usdtRate = parseNumber(data.cryptoRates?.USDT || data.nairaPerUsdt || data.usdtRate || data.rate);
+
+                btcRateInput.value = btcRate > 0 ? btcRate : "";
+                ethRateInput.value = ethRate > 0 ? ethRate : "";
+                usdtRateInput.value = usdtRate > 0 ? usdtRate : "";
             } else {
-                rateInput.value = "";
+                btcRateInput.value = "";
+                ethRateInput.value = "";
+                usdtRateInput.value = "";
             }
         }
 
         async function saveExchangeRate() {
             hideAlert();
-            const rate = parseNumber(rateInput.value);
-            if (rate <= 0) {
-                showAlert("Enter a valid Naira per USDT rate greater than 0.", "error");
+            const btcRate = parseNumber(btcRateInput.value);
+            const ethRate = parseNumber(ethRateInput.value);
+            const usdtRate = parseNumber(usdtRateInput.value);
+
+            if (btcRate <= 0 || ethRate <= 0 || usdtRate <= 0) {
+                showAlert("Enter valid BTC, ETH and USDT rates greater than 0.", "error");
                 return;
             }
 
@@ -518,11 +538,16 @@
             try {
                 const settingsRef = doc(db, "settings", SETTINGS_DOC_ID);
                 await setDoc(settingsRef, {
-                    nairaPerUsdt: rate,
+                    cryptoRates: {
+                        BTC: btcRate,
+                        ETH: ethRate,
+                        USDT: usdtRate
+                    },
+                    nairaPerUsdt: usdtRate,
                     updatedAt: serverTimestamp(),
                     updatedBy: currentAdmin.uid
                 }, { merge: true });
-                showAlert(`Exchange rate updated to ${rate} NGN per USDT.`, "success");
+                showAlert(`Rates updated: BTC ${btcRate}, ETH ${ethRate}, USDT ${usdtRate}.`, "success");
             } catch (error) {
                 console.error("Failed to save exchange rate:", error);
                 showAlert(`Failed to save exchange rate: ${error.message}`, "error");
@@ -610,7 +635,7 @@
                 return explicitNaira;
             }
 
-            const rate = parseNumber(rateInput.value);
+            const rate = parseNumber(usdtRateInput.value);
             const usdtAmount = getUsdtAmount(trade);
             if (rate > 0 && usdtAmount > 0) {
                 return rate * usdtAmount;
