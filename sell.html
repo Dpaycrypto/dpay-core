@@ -20,6 +20,7 @@
             <div class="h-[1px] bg-white/5 mb-4"></div>
             <label class="text-[9px] font-black uppercase text-slate-500 mb-2 block">You Get (Naira)</label>
             <h3 id="naira-display" class="text-2xl font-black text-emerald-500">₦0.00</h3>
+            <p id="rate-note" class="text-[11px] text-slate-400 mt-2">Rate loading...</p>
         </div>
 
         <div class="bg-slate-900/40 p-6 rounded-3xl border border-white/5 mb-8 space-y-4">
@@ -33,6 +34,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4", 
@@ -45,19 +47,47 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const RATE = 1550; // Set your Naira rate here
+        const db = getFirestore(app);
+
+        const FALLBACK_RATE = 1550;
+        let currentRate = FALLBACK_RATE;
 
         onAuthStateChanged(auth, (user) => { if (!user) window.location.href = "login.html"; });
 
+        async function loadSellRate() {
+            const rateNote = document.getElementById('rate-note');
+
+            try {
+                const settingsSnap = await getDoc(doc(db, 'settings', 'app'));
+                if (settingsSnap.exists()) {
+                    const data = settingsSnap.data();
+                    const fromAdmin = Number(data.nairaPerUsdt || data.usdtRate || data.rate);
+                    if (Number.isFinite(fromAdmin) && fromAdmin > 0) {
+                        currentRate = fromAdmin;
+                    }
+                }
+
+                rateNote.innerText = `Current rate: 1 USDT = NGN ${currentRate.toLocaleString()}`;
+            } catch (error) {
+                console.error('Failed to load sell rate:', error);
+                rateNote.innerText = `Using fallback rate: 1 USDT = NGN ${FALLBACK_RATE.toLocaleString()}`;
+            }
+
+            window.calculate();
+        }
+
         window.calculate = () => {
-            const usd = document.getElementById('usd-input').value;
-            document.getElementById('naira-display').innerText = usd ? "₦" + (usd * RATE).toLocaleString() : "₦0.00";
+            const usd = Number(document.getElementById('usd-input').value || 0);
+            const naira = usd * currentRate;
+            document.getElementById('naira-display').innerText = usd > 0 ? "₦" + naira.toLocaleString() : "₦0.00";
         };
 
         window.submitOrder = () => {
             alert("Order Submitted! Send your USDT to the company wallet address on the next page.");
             // Next we build the "Payment Proof" page
         };
+
+        loadSellRate();
     </script>
 </body>
 </html>
