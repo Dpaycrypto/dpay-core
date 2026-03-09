@@ -311,14 +311,24 @@
                     <i class="fas fa-lock"></i> Change Password
                 </button>
             </form>
+
+            <div class="divider"></div>
+            <div class="section-title" style="color:#dc2626;">
+                <i class="fas fa-triangle-exclamation"></i>
+                Danger Zone
+            </div>
+            <p style="color:#7f1d1d; font-size:13px; margin-bottom:12px;">Delete your account permanently. This cannot be undone.</p>
+            <button type="button" class="btn-secondary" style="border-color:#dc2626; color:#dc2626;" onclick="deleteMyAccount()">
+                <i class="fas fa-user-xmark"></i> Delete My Account
+            </button>
         </div>
     </div>
 
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getAuth, onAuthStateChanged, updateProfile, updateEmail, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged, updateProfile, updateEmail, updatePassword, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4",
@@ -538,6 +548,46 @@
                 }, 5000);
             }
         });
+
+        // Delete account (Auth + Firestore profile)
+        window.deleteMyAccount = async function() {
+            if (!currentUser) {
+                alert('No active session. Please log in again.');
+                return;
+            }
+
+            const confirmed = confirm('This will permanently delete your account. Continue?');
+            if (!confirmed) {
+                return;
+            }
+
+            const password = prompt('Enter your current password to confirm account deletion:');
+            if (!password) {
+                alert('Account deletion cancelled.');
+                return;
+            }
+
+            try {
+                const credential = EmailAuthProvider.credential(currentUser.email, password);
+                await reauthenticateWithCredential(currentUser, credential);
+
+                const uid = currentUser.uid;
+                await deleteDoc(doc(db, 'user', uid));
+                await deleteUser(currentUser);
+
+                localStorage.removeItem('userName');
+                localStorage.removeItem('emailVerified');
+                alert('Account deleted successfully. You can now create a new account.');
+                window.location.href = 'signup.html';
+            } catch (error) {
+                console.error('Delete account error:', error);
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    alert('Incorrect password. Please try again.');
+                } else {
+                    alert('Failed to delete account: ' + error.message);
+                }
+            }
+        };
     </script>
 </body>
 </html>
