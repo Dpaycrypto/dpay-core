@@ -556,23 +556,36 @@
                 return;
             }
 
+            if (!currentUser.email) {
+                alert('This account has no email/password login attached. Use Firebase Console to remove it.');
+                return;
+            }
+
             const confirmed = confirm('This will permanently delete your account. Continue?');
             if (!confirmed) {
                 return;
             }
 
-            const password = prompt('Enter your current password to confirm account deletion:');
+            const password = (prompt('Enter your current password to confirm account deletion:') || '').trim();
             if (!password) {
                 alert('Account deletion cancelled.');
                 return;
             }
 
             try {
+                alert('Processing deletion... please wait.');
                 const credential = EmailAuthProvider.credential(currentUser.email, password);
                 await reauthenticateWithCredential(currentUser, credential);
 
                 const uid = currentUser.uid;
-                await deleteDoc(doc(db, 'user', uid));
+
+                // Do not block account deletion if Firestore is temporarily unavailable.
+                try {
+                    await deleteDoc(doc(db, 'user', uid));
+                } catch (profileError) {
+                    console.warn('Could not delete Firestore profile doc, continuing with Auth delete:', profileError);
+                }
+
                 await deleteUser(currentUser);
 
                 localStorage.removeItem('userName');
@@ -583,6 +596,10 @@
                 console.error('Delete account error:', error);
                 if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
                     alert('Incorrect password. Please try again.');
+                } else if (error.code === 'auth/requires-recent-login') {
+                    alert('Please log out and log in again, then retry account deletion.');
+                } else if (error.code === 'auth/network-request-failed' || error.code === 'unavailable') {
+                    alert('Network issue while deleting account. Check connection and try again.');
                 } else {
                     alert('Failed to delete account: ' + error.message);
                 }
