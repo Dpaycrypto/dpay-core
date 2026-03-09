@@ -93,8 +93,10 @@
                     const docSnap = await getDocFromServer(userDocRef);
                     isAdmin = docSnap.exists() && docSnap.data().isAdmin === true;
                 } catch (docError) {
-                    // If profile read is blocked/missing, allow normal user login path.
                     console.warn("Could not read user profile document:", docError);
+                    if (docError?.code === "permission-denied") {
+                        alert("Signed in, but Firestore rules blocked admin check. Update your Firestore rules for /user/{uid} reads.");
+                    }
                 }
 
                 window.location.href = isAdmin ? "admin.html" : "dashboard.html";
