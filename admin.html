@@ -391,9 +391,15 @@
         </div>
     </div>
 
+    <div id="loadingState" class="locked">
+        <h2>Loading Admin Panel...</h2>
+        <p>Checking your session and permissions.</p>
+    </div>
+
     <div id="lockedState" class="locked" style="display:none;">
         <h2>Admin Access Only</h2>
-        <p>Your account is not authorized to view this page.</p>
+        <p id="lockedText">Your account is not authorized to view this page.</p>
+        <p style="margin-top:12px;"><a href="login.html" class="link">Go to Login</a></p>
     </div>
 
     <script type="module">
@@ -424,7 +430,9 @@
         const db = getFirestore(app);
 
         const appRoot = document.getElementById("app");
+        const loadingState = document.getElementById("loadingState");
         const lockedState = document.getElementById("lockedState");
+        const lockedText = document.getElementById("lockedText");
         const adminIdentity = document.getElementById("adminIdentity");
         const alertBox = document.getElementById("alertBox");
         const rateInput = document.getElementById("rateInput");
@@ -437,6 +445,12 @@
         let currentAdmin = null;
         let usersCache = [];
         let tradesCache = [];
+
+        function showOnly(target) {
+            appRoot.style.display = target === "app" ? "block" : "none";
+            loadingState.style.display = target === "loading" ? "block" : "none";
+            lockedState.style.display = target === "locked" ? "block" : "none";
+        }
 
         function showAlert(message, type = "success") {
             alertBox.className = `alert show ${type === "success" ? "alert-success" : "alert-error"}`;
@@ -848,7 +862,8 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                window.location.href = "login.html";
+                lockedText.textContent = "You are not logged in. Please sign in to continue.";
+                showOnly("locked");
                 return;
             }
 
@@ -856,22 +871,20 @@
                 const userDocRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userDocRef);
                 if (!userSnap.exists() || userSnap.data().isAdmin !== true) {
-                    appRoot.style.display = "none";
-                    lockedState.style.display = "block";
-                    setTimeout(() => {
-                        window.location.href = "dashboard.html";
-                    }, 2000);
+                    lockedText.textContent = "Your account is signed in, but it is not marked as admin yet.";
+                    showOnly("locked");
                     return;
                 }
 
                 currentAdmin = user;
                 adminIdentity.textContent = `Signed in as ${user.email || user.uid}`;
-                appRoot.style.display = "block";
-                lockedState.style.display = "none";
+                showOnly("app");
 
                 await Promise.all([loadExchangeRate(), loadUsers(), loadPendingTrades()]);
             } catch (error) {
                 console.error("Admin boot failed:", error);
+                lockedText.textContent = "Failed to load admin panel. Check your internet and Firestore rules.";
+                showOnly("locked");
                 showAlert(`Failed to load admin panel: ${error.message}`, "error");
             }
         });
