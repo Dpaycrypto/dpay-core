@@ -206,7 +206,8 @@
         <div class="rate-box">
             <div style="color:#94A3B8; font-size:13px; font-weight:700;">Current Exchange Rate (NGN)</div>
             <div id="marketRate" class="rate-value">1 BTC = NGN 162,500,000</div>
-            <div class="rate-note">Rates update periodically and may change before final confirmation.</div>
+            <div class="rate-note" id="rateNote">Rates update periodically and may change before final confirmation.</div>
+            <div id="rateStatus" style="color:#94A3B8; font-size:12px; margin-top:8px;">Loading live rates...</div>
         </div>
 
         <button class="transfer-btn" type="button" onclick="transferToWallet()">Transfer to Wallet</button>
@@ -214,7 +215,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4",
@@ -234,6 +235,8 @@
             ETH: 8700000,
             USDT: 1600
         };
+        const rateStatus = document.getElementById('rateStatus');
+        const rateNote = document.getElementById('rateNote');
 
         function formatNaira(value) {
             return new Intl.NumberFormat('en-NG').format(value);
@@ -251,14 +254,16 @@
             alert(`Transfer started for ${selectedAsset}. Please complete wallet transfer details on the next step.`);
         };
 
-        async function loadAdminRates() {
-            try {
-                const settingsSnap = await getDoc(doc(db, 'settings', 'app'));
-                if (!settingsSnap.exists()) {
+        function bindLiveRates() {
+            const settingsRef = doc(db, 'settings', 'app');
+
+            onSnapshot(settingsRef, (snapshot) => {
+                if (!snapshot.exists()) {
+                    rateStatus.innerText = 'Live rates not found. Using default values.';
                     return;
                 }
 
-                const data = settingsSnap.data();
+                const data = snapshot.data();
                 const cryptoRates = data.cryptoRates || {};
 
                 const btcRate = Number(cryptoRates.BTC || data.btcRate);
@@ -276,12 +281,15 @@
                 }
 
                 document.getElementById('marketRate').innerText = `1 ${selectedAsset} = NGN ${formatNaira(assetRates[selectedAsset] || 0)}`;
-            } catch (error) {
-                console.error('Failed to load admin crypto rates:', error);
-            }
+                rateNote.innerText = 'Live admin rates are active.';
+                rateStatus.innerText = `Synced: BTC ${formatNaira(assetRates.BTC)}, ETH ${formatNaira(assetRates.ETH)}, USDT ${formatNaira(assetRates.USDT)}`;
+            }, (error) => {
+                console.error('Live rate sync failed:', error);
+                rateStatus.innerText = `Could not load live rates (${error.code || 'unknown error'}).`;
+            });
         }
 
-        loadAdminRates();
+        bindLiveRates();
     </script>
 </body>
 </html>
