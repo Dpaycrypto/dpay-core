@@ -54,7 +54,6 @@
         const db = getFirestore(app);
         const continueBtn = document.getElementById('continueBtn');
         let pendingRedirectUrl = null;
-        const ADMIN_FALLBACK_EMAILS = ['deazyexchange@gmail.com'];
 
         function setAdminDebug(text) {
             const box = document.getElementById('adminDebugBox');
@@ -118,7 +117,6 @@
                 const user = userCredential.user;
                 const userDocRef = doc(db, 'user', user.uid);
                 let isAdmin = false;
-                const emailIsAdminFallback = ADMIN_FALLBACK_EMAILS.includes((user.email || '').toLowerCase());
                 const tokenInfo = await user.getIdTokenResult();
                 const projectId = app.options.projectId || 'unknown';
 
@@ -160,11 +158,6 @@
                     setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: ${docError?.code || 'unknown'}\nerrorMessage: ${docError?.message || 'unknown'}\nredirect: dashboard.html`);
                     if (docError?.code === "permission-denied") {
                         alert("Signed in, but Firestore rules blocked admin check. Update your Firestore rules for /user/{uid} reads.");
-                    }
-
-                    if (emailIsAdminFallback) {
-                        isAdmin = true;
-                        setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: ${docError?.code || 'unknown'}\nadminFallbackByEmail: true\nredirect: admin.html`);
                     }
                 }
 

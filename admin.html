@@ -460,7 +460,6 @@
             ETH: 8700000,
             USDT: 1550
         };
-        const ADMIN_FALLBACK_EMAILS = ["deazyexchange@gmail.com"];
         let currentAdmin = null;
         let usersCache = [];
         let tradesCache = [];
@@ -933,8 +932,6 @@
                 return;
             }
 
-            const isFallbackAdmin = ADMIN_FALLBACK_EMAILS.includes(String(user.email || "").toLowerCase());
-
             try {
                 const userDocRef = doc(db, "user", user.uid);
                 let userSnap;
@@ -947,7 +944,7 @@
                         throw serverErr;
                     }
                 }
-                if ((!userSnap.exists() || userSnap.data().isAdmin !== true) && !isFallbackAdmin) {
+                if (!userSnap.exists() || userSnap.data().isAdmin !== true) {
                     lockedText.textContent = "Your account is signed in, but it is not marked as admin yet.";
                     showOnly("locked");
                     return;
@@ -960,13 +957,6 @@
                 await Promise.all([loadExchangeRate(), loadUsers(), loadPendingTrades()]);
             } catch (error) {
                 console.error("Admin boot failed:", error);
-                if (isFallbackAdmin) {
-                    currentAdmin = user;
-                    adminIdentity.textContent = `Signed in as ${user.email || user.uid} (fallback admin)`;
-                    showOnly("app");
-                    await Promise.all([loadExchangeRate(), loadUsers(), loadPendingTrades()]);
-                    return;
-                }
                 lockedText.textContent = "Failed to load admin panel. Check your internet and Firestore rules.";
                 showOnly("locked");
                 showAlert(`Failed to load admin panel: ${error.message}`, "error");
