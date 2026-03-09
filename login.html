@@ -69,7 +69,7 @@
 
         // Define the handleLogin function and attach it to window
         window.handleLogin = async function() {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim().toLowerCase();
             const pass = document.getElementById('pass').value;
             const btn = document.getElementById('btn');
             
@@ -82,8 +82,7 @@
             btn.disabled = true;
             
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
+                await signInWithEmailAndPassword(auth, email, pass);
                 
                 // Successfully signed in - redirect to dashboard
                 // Note: OTP verification is only required during signup, not for existing accounts
@@ -93,7 +92,9 @@
                 console.error("Login error:", e);
                 
                 // Handle specific Firebase auth errors
-                if (e.code === 'auth/user-not-found') {
+                if (e.code === 'auth/invalid-credential') {
+                    alert("Invalid email or password. If you forgot it, use 'Forgot Password?'.");
+                } else if (e.code === 'auth/user-not-found') {
                     alert("No account found with this email. Please sign up first.");
                 } else if (e.code === 'auth/wrong-password') {
                     alert("Incorrect password. Please try again.");
@@ -102,7 +103,9 @@
                 } else if (e.code === 'auth/user-disabled') {
                     alert("This account has been disabled.");
                 } else if (e.code === 'auth/too-many-requests') {
-                    alert("Too many failed login attempts. Please try again later.");
+                    alert("Too many failed login attempts. Wait a few minutes, then try again or reset your password.");
+                } else if (e.code === 'auth/network-request-failed') {
+                    alert("Network error. Check internet connection and try again.");
                 } else {
                     alert("Login failed: " + e.message);
                 }
