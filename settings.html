@@ -574,19 +574,33 @@
 
             try {
                 alert('Processing deletion... please wait.');
+
+                const withTimeout = async (promise, ms, stepName) => {
+                    let timerId;
+                    const timeoutPromise = new Promise((_, reject) => {
+                        timerId = setTimeout(() => reject(new Error(`${stepName} timed out. Check internet and try again.`)), ms);
+                    });
+
+                    try {
+                        return await Promise.race([promise, timeoutPromise]);
+                    } finally {
+                        clearTimeout(timerId);
+                    }
+                };
+
                 const credential = EmailAuthProvider.credential(currentUser.email, password);
-                await reauthenticateWithCredential(currentUser, credential);
+                await withTimeout(reauthenticateWithCredential(currentUser, credential), 15000, 'Re-authentication');
 
                 const uid = currentUser.uid;
 
                 // Do not block account deletion if Firestore is temporarily unavailable.
                 try {
-                    await deleteDoc(doc(db, 'user', uid));
+                    await withTimeout(deleteDoc(doc(db, 'user', uid)), 10000, 'Profile delete');
                 } catch (profileError) {
                     console.warn('Could not delete Firestore profile doc, continuing with Auth delete:', profileError);
                 }
 
-                await deleteUser(currentUser);
+                await withTimeout(deleteUser(currentUser), 15000, 'Auth account delete');
 
                 localStorage.removeItem('userName');
                 localStorage.removeItem('emailVerified');
