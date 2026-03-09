@@ -28,6 +28,7 @@
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Firebase configuration
         const firebaseConfig = { 
@@ -42,6 +43,7 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
         window.handleForgotPassword = async function() {
             const email = document.getElementById('email').value.trim();
@@ -82,11 +84,14 @@
             btn.disabled = true;
             
             try {
-                await signInWithEmailAndPassword(auth, email, pass);
-                
-                // Successfully signed in - redirect to dashboard
-                // Note: OTP verification is only required during signup, not for existing accounts
-                window.location.href = "dashboard.html";
+                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                const userDoc = await getDoc(doc(db, 'user', userCredential.user.uid));
+
+                if (userDoc.exists() && userDoc.data().isAdmin === true) {
+                    window.location.href = "admin.html";
+                } else {
+                    window.location.href = "dashboard.html";
+                }
                 
             } catch (e) {
                 console.error("Login error:", e);

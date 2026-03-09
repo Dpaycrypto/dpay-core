@@ -624,7 +624,7 @@
         async function loadUsers() {
             usersTableBody.innerHTML = "<tr><td colspan=\"5\">Loading users...</td></tr>";
             try {
-                const usersSnap = await getDocs(collection(db, "users"));
+                const usersSnap = await getDocs(collection(db, "user"));
                 usersCache = usersSnap.docs.map((snapshot) => {
                     const data = snapshot.data();
                     return {
@@ -727,7 +727,7 @@
             }
 
             await Promise.all(unresolved.map(async (uid) => {
-                const userSnap = await getDoc(doc(db, "users", uid));
+                const userSnap = await getDoc(doc(db, "user", uid));
                 if (userSnap.exists()) {
                     const data = userSnap.data();
                     usersCache.push({
@@ -786,7 +786,7 @@
 
             try {
                 await runTransaction(db, async (transaction) => {
-                    const userRef = doc(db, "users", userId);
+                    const userRef = doc(db, "user", userId);
                     const userSnap = await transaction.get(userRef);
                     if (!userSnap.exists()) {
                         throw new Error("User record does not exist.");
@@ -837,7 +837,7 @@
                         throw new Error("Cannot calculate Naira amount. Ensure trade has USDT amount and exchange rate is set.");
                     }
 
-                    const userRef = doc(db, "users", tradeUserUid);
+                    const userRef = doc(db, "user", tradeUserUid);
                     const userSnap = await transaction.get(userRef);
                     if (!userSnap.exists()) {
                         throw new Error("Target user document not found.");
@@ -932,7 +932,7 @@
             }
 
             try {
-                const userDocRef = doc(db, "users", user.uid);
+                const userDocRef = doc(db, "user", user.uid);
                 const userSnap = await getDoc(userDocRef);
                 if (!userSnap.exists() || userSnap.data().isAdmin !== true) {
                     lockedText.textContent = "Your account is signed in, but it is not marked as admin yet.";

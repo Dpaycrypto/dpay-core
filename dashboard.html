@@ -334,7 +334,7 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
-                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    const userDoc = await getDoc(doc(db, 'user', user.uid));
                     let userName = 'Guest';
                     
                     if (userDoc.exists()) {

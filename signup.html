@@ -86,6 +86,7 @@
     // Firebase Modular SDK Imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // Your Firebase Configuration
     const firebaseConfig = {
@@ -99,6 +100,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
     
     // Disable email verification requirement
     auth.settings = { appVerificationDisabledForTesting: true };
@@ -124,9 +126,18 @@
 
         try {
             // 1. Create the user in Firebase
-            await createUserWithEmailAndPassword(auth, email, pass);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
 
-            // 2. Send the code via EmailJS
+            // 2. Create profile doc in singular "user" collection
+            await setDoc(doc(db, 'user', userCredential.user.uid), {
+                fullName,
+                email,
+                phone: '',
+                isAdmin: false,
+                createdAt: serverTimestamp()
+            }, { merge: true });
+
+            // 3. Send the code via EmailJS
             emailjs.send(
                 "service_t1xt52i",   // Your Service ID
                 "template_nmwdehj",  // Your Template ID
