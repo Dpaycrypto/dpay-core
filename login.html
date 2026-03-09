@@ -117,8 +117,10 @@
                 const user = userCredential.user;
                 const userDocRef = doc(db, 'user', user.uid);
                 let isAdmin = false;
+                const tokenInfo = await user.getIdTokenResult();
+                const projectId = app.options.projectId || 'unknown';
 
-                setAdminDebug(`uid: ${user.uid}\npath: user/${user.uid}\nstep: signed in, checking admin doc from server...`);
+                setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\nstep: signed in, checking admin doc from server...`);
 
                 try {
                     const docSnap = await getDocFromServer(userDocRef);
@@ -130,7 +132,7 @@
                             isAdmin: false,
                             createdAt: serverTimestamp()
                         }, { merge: true });
-                        setAdminDebug(`uid: ${user.uid}\npath: user/${user.uid}\ndocExists: false -> created\nisAdmin(raw): false\nredirect: dashboard.html`);
+                        setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\ndocExists: false -> created\nisAdmin(raw): false\nredirect: dashboard.html`);
                         isAdmin = false;
                         prepareContinue("dashboard.html");
                         btn.innerText = "Sign In";
@@ -140,10 +142,10 @@
 
                     isAdmin = docSnap.exists() && docSnap.data().isAdmin === true;
                     const rawAdminValue = docSnap.exists() ? String(docSnap.data().isAdmin) : 'MISSING_DOC';
-                    setAdminDebug(`uid: ${user.uid}\npath: user/${user.uid}\ndocExists: ${docSnap.exists()}\nisAdmin(raw): ${rawAdminValue}\nredirect: ${isAdmin ? 'admin.html' : 'dashboard.html'}`);
+                    setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\ndocExists: ${docSnap.exists()}\nisAdmin(raw): ${rawAdminValue}\nredirect: ${isAdmin ? 'admin.html' : 'dashboard.html'}`);
                 } catch (docError) {
                     console.warn("Could not read user profile document:", docError);
-                    setAdminDebug(`uid: ${user.uid}\npath: user/${user.uid}\nerrorCode: ${docError?.code || 'unknown'}\nerrorMessage: ${docError?.message || 'unknown'}\nredirect: dashboard.html`);
+                    setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: ${docError?.code || 'unknown'}\nerrorMessage: ${docError?.message || 'unknown'}\nredirect: dashboard.html`);
                     if (docError?.code === "permission-denied") {
                         alert("Signed in, but Firestore rules blocked admin check. Update your Firestore rules for /user/{uid} reads.");
                     }
