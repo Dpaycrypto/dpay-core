@@ -212,23 +212,69 @@
         <button class="transfer-btn" type="button" onclick="transferToWallet()">Transfer to Wallet</button>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7hyJXJi2ilZd4owjWesMyi5FHo_1M2I4",
+            authDomain: "dpay-core.firebaseapp.com",
+            projectId: "dpay-core",
+            storageBucket: "dpay-core.firebasestorage.app",
+            messagingSenderId: "415239564375",
+            appId: "1:415239564375:web:ac372f11b7243c21a90712"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         let selectedAsset = 'BTC';
+        const assetRates = {
+            BTC: 162500000,
+            ETH: 8700000,
+            USDT: 1600
+        };
 
         function formatNaira(value) {
             return new Intl.NumberFormat('en-NG').format(value);
         }
 
-        window.selectAsset = function(asset, rate, element) {
+        window.selectAsset = function(asset, _rate, element) {
             selectedAsset = asset;
             document.querySelectorAll('.asset-btn').forEach(btn => btn.classList.remove('active'));
             element.classList.add('active');
-            document.getElementById('marketRate').innerText = `1 ${asset} = NGN ${formatNaira(rate)}`;
+            const activeRate = assetRates[asset] || 0;
+            document.getElementById('marketRate').innerText = `1 ${asset} = NGN ${formatNaira(activeRate)}`;
         };
 
         window.transferToWallet = function() {
             alert(`Transfer started for ${selectedAsset}. Please complete wallet transfer details on the next step.`);
         };
+
+        async function loadAdminUsdtRate() {
+            try {
+                const settingsSnap = await getDoc(doc(db, 'settings', 'app'));
+                if (!settingsSnap.exists()) {
+                    return;
+                }
+
+                const data = settingsSnap.data();
+                const usdtRate = Number(data.nairaPerUsdt || data.usdtRate || data.rate);
+                if (!Number.isFinite(usdtRate) || usdtRate <= 0) {
+                    return;
+                }
+
+                assetRates.USDT = usdtRate;
+
+                if (selectedAsset === 'USDT') {
+                    document.getElementById('marketRate').innerText = `1 USDT = NGN ${formatNaira(assetRates.USDT)}`;
+                }
+            } catch (error) {
+                console.error('Failed to load admin USDT rate:', error);
+            }
+        }
+
+        loadAdminUsdtRate();
     </script>
 </body>
 </html>
