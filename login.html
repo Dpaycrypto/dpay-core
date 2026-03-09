@@ -28,7 +28,7 @@
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDocFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Firebase configuration
         const firebaseConfig = { 
@@ -90,7 +90,7 @@
                 let isAdmin = false;
 
                 try {
-                    const docSnap = await getDoc(userDocRef);
+                    const docSnap = await getDocFromServer(userDocRef);
                     isAdmin = docSnap.exists() && docSnap.data().isAdmin === true;
                 } catch (docError) {
                     // If profile read is blocked/missing, allow normal user login path.
