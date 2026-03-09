@@ -87,10 +87,9 @@
                 const userCredential = await signInWithEmailAndPassword(auth, email, pass);
                 const user = userCredential.user;
                 const userDocRef = doc(db, 'user', user.uid);
-                const userDoc = await getDoc(userDocRef);
+                const docSnap = await getDoc(userDocRef);
 
-                const data = userDoc.exists() ? userDoc.data() : null;
-                if (data && data.isAdmin === true) {
+                if (docSnap.exists() && docSnap.data().isAdmin === true) {
                     window.location.href = "admin.html";
                 } else {
                     window.location.href = "dashboard.html";
