@@ -27,6 +27,9 @@
         <div id="adminDebugBox" style="display:none; margin-top:16px; text-align:left; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px;">
             <div style="font-size:12px; font-weight:700; color:#86efac; margin-bottom:8px;">Admin Check Debug</div>
             <pre id="adminDebugText" style="margin:0; white-space:pre-wrap; word-break:break-word; font-size:12px; color:#e2e8f0;"></pre>
+            <button id="continueBtn" type="button" style="display:none; margin-top:10px; width:100%; background:#10b981; color:#052e1c; border:none; border-radius:10px; padding:10px; font-weight:800; cursor:pointer;">
+                Continue
+            </button>
         </div>
     </div>
     <script type="module">
@@ -49,6 +52,8 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const continueBtn = document.getElementById('continueBtn');
+        let pendingRedirectUrl = null;
 
         function setAdminDebug(text) {
             const box = document.getElementById('adminDebugBox');
@@ -56,6 +61,17 @@
             box.style.display = 'block';
             textEl.textContent = text;
         }
+
+        function prepareContinue(url) {
+            pendingRedirectUrl = url;
+            continueBtn.style.display = 'block';
+        }
+
+        continueBtn.addEventListener('click', () => {
+            if (pendingRedirectUrl) {
+                window.location.href = pendingRedirectUrl;
+            }
+        });
 
         window.handleForgotPassword = async function() {
             const email = document.getElementById('email').value.trim();
@@ -117,7 +133,10 @@
                     }
                 }
 
-                window.location.href = isAdmin ? "admin.html" : "dashboard.html";
+                prepareContinue(isAdmin ? "admin.html" : "dashboard.html");
+                btn.innerText = "Sign In";
+                btn.disabled = false;
+                return;
                 
             } catch (e) {
                 console.error("Login error:", e);
