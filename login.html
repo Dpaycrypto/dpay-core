@@ -36,7 +36,7 @@
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDocFromServer, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDocFromServer, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Firebase configuration
         const firebaseConfig = { 
@@ -123,7 +123,17 @@
                 setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\nstep: signed in, checking admin doc from server...`);
 
                 try {
-                    const docSnap = await getDocFromServer(userDocRef);
+                    let docSnap;
+                    try {
+                        docSnap = await getDocFromServer(userDocRef);
+                    } catch (serverErr) {
+                        if (serverErr?.code === "unavailable") {
+                            // Fallback read when server fetch fails due transient offline/network issue.
+                            docSnap = await getDoc(userDocRef);
+                        } else {
+                            throw serverErr;
+                        }
+                    }
                     if (!docSnap.exists()) {
                         await setDoc(userDocRef, {
                             email: user.email || email,

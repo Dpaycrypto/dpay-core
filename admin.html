@@ -934,7 +934,16 @@
 
             try {
                 const userDocRef = doc(db, "user", user.uid);
-                const userSnap = await getDocFromServer(userDocRef);
+                let userSnap;
+                try {
+                    userSnap = await getDocFromServer(userDocRef);
+                } catch (serverErr) {
+                    if (serverErr?.code === "unavailable") {
+                        userSnap = await getDoc(userDocRef);
+                    } else {
+                        throw serverErr;
+                    }
+                }
                 if (!userSnap.exists() || userSnap.data().isAdmin !== true) {
                     lockedText.textContent = "Your account is signed in, but it is not marked as admin yet.";
                     showOnly("locked");
