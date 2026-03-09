@@ -136,6 +136,7 @@
             const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
             const user = userCredential.user;
             const userDocRef = doc(db, 'user', user.uid);
+            const projectId = app.options.projectId || 'unknown';
 
             // 2. Create profile doc in singular "user" collection
             await setDoc(userDocRef, {
@@ -157,7 +158,7 @@
                 "sq_PGY4EB2TDai6P0"   // Your Public Key
             )
             .then(() => {
-                alert("Success! Check your Gmail for the code.");
+                alert(`Success! Account created in project ${projectId}. UID: ${user.uid}. Check your Gmail for the code.`);
                 localStorage.setItem("userOTP", otp); // Save code locally to verify on next page
                 localStorage.setItem("userName", fullName); // Save full name for dashboard
                 window.location.href = "verify.html"; // Redirect to verification screen
