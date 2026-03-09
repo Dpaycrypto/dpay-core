@@ -400,23 +400,44 @@
         window.cancelEditPersonal = function() {
             document.getElementById('fullName').value = originalData.fullName;
             document.getElementById('phone').value = originalData.phone;
-            toggleEditPersonal();
+            window.toggleEditPersonal();
         };
 
         // Save personal information
         document.getElementById('personalInfoForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (!currentUser) {
+                const errorMsg = document.getElementById('personalError');
+                document.getElementById('personalErrorText').textContent = 'Session not ready. Please wait a second and try again.';
+                errorMsg.style.display = 'flex';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 5000);
+                return;
+            }
             
             const fullName = document.getElementById('fullName').value.trim();
             const phone = document.getElementById('phone').value.trim();
 
+            if (!fullName) {
+                const errorMsg = document.getElementById('personalError');
+                document.getElementById('personalErrorText').textContent = 'Full name cannot be empty.';
+                errorMsg.style.display = 'flex';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 5000);
+                return;
+            }
+
             try {
-                // Update Firestore
-                await updateDoc(doc(db, 'users', currentUser.uid), {
+                // Use setDoc with merge to avoid failing if the user document is missing.
+                await setDoc(doc(db, 'users', currentUser.uid), {
                     fullName: fullName,
+                    email: currentUser.email,
                     phone: phone,
                     updatedAt: new Date().toISOString()
-                });
+                }, { merge: true });
 
                 // Update Firebase Auth display name
                 await updateProfile(currentUser, {
@@ -438,7 +459,7 @@
                 }, 3000);
 
                 // Exit edit mode
-                toggleEditPersonal();
+                window.toggleEditPersonal();
             } catch (error) {
                 console.error('Error updating personal info:', error);
                 const errorMsg = document.getElementById('personalError');
