@@ -101,6 +101,8 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const runtimeProjectId = app.options.projectId || 'unknown-project';
+    const runtimeAuthDomain = app.options.authDomain || 'unknown-auth-domain';
     
     // Disable email verification requirement
     auth.settings = { appVerificationDisabledForTesting: true };
@@ -127,7 +129,7 @@
         try {
             const existingMethods = await fetchSignInMethodsForEmail(auth, email);
             if (existingMethods.length > 0) {
-                alert(`This email is already registered in Firebase Auth (${existingMethods.join(', ')}). Please log in instead.`);
+                alert(`This email is already registered in Firebase Auth (${existingMethods.join(', ')}). Project: ${runtimeProjectId}, Auth domain: ${runtimeAuthDomain}. Please log in instead.`);
                 window.location.href = 'login.html';
                 return;
             }
@@ -167,13 +169,13 @@
         } catch (e) {
             // handle common auth errors
             if (e.code === 'auth/email-already-in-use') {
-                alert('That email is already registered. Please log in instead.');
+                alert(`That email is already registered. Project: ${runtimeProjectId}, Auth domain: ${runtimeAuthDomain}. Please log in instead.`);
                 // ensure any existing session is signed out so user must re-authenticate
                 try { await auth.signOut(); } catch {};
                 window.location.href = 'login.html';
                 return;
             }
-            alert("Signup Error: " + e.message);
+            alert(`Signup Error: ${e.message}\nProject: ${runtimeProjectId}\nAuth domain: ${runtimeAuthDomain}`);
             btn.innerText = "VERIFY MY EMAIL";
             btn.disabled = false;
         }
