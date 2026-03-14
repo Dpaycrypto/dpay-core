@@ -36,7 +36,7 @@
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDocFromServer, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { initializeFirestore, doc, getDocFromServer, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Firebase configuration
         const firebaseConfig = { 
@@ -51,7 +51,10 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        const db = initializeFirestore(app, {
+            experimentalAutoDetectLongPolling: true,
+            useFetchStreams: false
+        });
         const continueBtn = document.getElementById('continueBtn');
         let pendingRedirectUrl = null;
 
@@ -158,6 +161,16 @@
                     setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: ${docError?.code || 'unknown'}\nerrorMessage: ${docError?.message || 'unknown'}\nredirect: dashboard.html`);
                     if (docError?.code === "permission-denied") {
                         alert("Signed in, but Firestore rules blocked admin check. Update your Firestore rules for /user/{uid} reads.");
+                        btn.innerText = "Sign In";
+                        btn.disabled = false;
+                        return;
+                    }
+                    if (docError?.code === "unavailable") {
+                        setAdminDebug(`projectId: ${projectId}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: unavailable\nerrorMessage: Firestore is offline or unreachable.\nredirect: blocked (retry login)`);
+                        alert("Signed in, but Firestore is offline/unreachable. Check your internet and try again. No redirect was done.");
+                        btn.innerText = "Sign In";
+                        btn.disabled = false;
+                        return;
                     }
                 }
 
