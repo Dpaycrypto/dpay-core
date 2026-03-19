@@ -156,7 +156,7 @@
                         }, { merge: true });
                         setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\ndocExists: false -> created\nisAdmin(raw): false\nredirect: dashboard.html`);
                         isAdmin = false;
-                        prepareContinue("dashboard.html");
+                        window.location.href = "dashboard.html";
                         btn.innerText = "Sign In";
                         btn.disabled = false;
                         return;
@@ -169,7 +169,8 @@
                     console.warn("Could not read user profile document:", docError);
                     setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: ${docError?.code || 'unknown'}\nerrorMessage: ${docError?.message || 'unknown'}\nredirect: dashboard.html`);
                     if (docError?.code === "permission-denied") {
-                        alert("Signed in, but Firestore rules blocked admin check. Update your Firestore rules for /user/{uid} reads.");
+                        alert("Signed in. Firestore rules blocked admin check, so you are being sent to dashboard as a regular user.");
+                        window.location.href = "dashboard.html";
                         btn.innerText = "Sign In";
                         btn.disabled = false;
                         return;
@@ -178,14 +179,14 @@
                         setAdminDebug(`projectId: ${projectId}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: unavailable\nerrorMessage: Firestore is offline or unreachable.\nredirect: dashboard.html (safe fallback)`);
                         alert("Signed in. Firestore is temporarily unreachable, so admin/profile checks were skipped. Continuing to dashboard.");
                         isAdmin = false;
-                        prepareContinue("dashboard.html");
+                        window.location.href = "dashboard.html";
                         btn.innerText = "Sign In";
                         btn.disabled = false;
                         return;
                     }
                 }
 
-                prepareContinue(isAdmin ? "admin.html" : "dashboard.html");
+                window.location.href = isAdmin ? "admin.html" : "dashboard.html";
                 btn.innerText = "Sign In";
                 btn.disabled = false;
                 return;
