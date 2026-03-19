@@ -55,6 +55,7 @@
             experimentalAutoDetectLongPolling: true,
             useFetchStreams: false
         });
+        const isFileProtocol = window.location.protocol === 'file:';
         const continueBtn = document.getElementById('continueBtn');
         let pendingRedirectUrl = null;
 
@@ -75,6 +76,10 @@
                 window.location.href = pendingRedirectUrl;
             }
         });
+
+        if (isFileProtocol) {
+            setAdminDebug('This page is running from file:// which can break Firestore network calls in some browsers. Serve this app via http://localhost (Live Server or any local web server).');
+        }
 
         window.handleForgotPassword = async function() {
             const email = document.getElementById('email').value.trim();
@@ -105,6 +110,10 @@
             const email = document.getElementById('email').value.trim().toLowerCase();
             const pass = document.getElementById('pass').value;
             const btn = document.getElementById('btn');
+
+            if (isFileProtocol) {
+                alert('You are running this page with file://. Open it through http://localhost to avoid Firestore unavailable errors.');
+            }
             
             if (!email || !pass) {
                 alert("Please enter both email and password");
@@ -166,8 +175,10 @@
                         return;
                     }
                     if (docError?.code === "unavailable") {
-                        setAdminDebug(`projectId: ${projectId}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: unavailable\nerrorMessage: Firestore is offline or unreachable.\nredirect: blocked (retry login)`);
-                        alert("Signed in, but Firestore is offline/unreachable. Check your internet and try again. No redirect was done.");
+                        setAdminDebug(`projectId: ${projectId}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: unavailable\nerrorMessage: Firestore is offline or unreachable.\nredirect: dashboard.html (safe fallback)`);
+                        alert("Signed in. Firestore is temporarily unreachable, so admin/profile checks were skipped. Continuing to dashboard.");
+                        isAdmin = false;
+                        prepareContinue("dashboard.html");
                         btn.innerText = "Sign In";
                         btn.disabled = false;
                         return;
