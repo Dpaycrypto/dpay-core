@@ -71,6 +71,39 @@
             continueBtn.style.display = 'block';
         }
 
+        async function wait(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        async function getUserDocWithRetry(userDocRef) {
+            const retryDelays = [0, 450, 1400];
+            let lastUnavailableError = null;
+
+            for (const delayMs of retryDelays) {
+                if (delayMs > 0) {
+                    await wait(delayMs);
+                }
+                try {
+                    return await getDocFromServer(userDocRef);
+                } catch (err) {
+                    if (err?.code === "unavailable") {
+                        lastUnavailableError = err;
+                        continue;
+                    }
+                    throw err;
+                }
+            }
+
+            try {
+                return await getDoc(userDocRef);
+            } catch (cacheErr) {
+                if (cacheErr?.code === "unavailable" && lastUnavailableError) {
+                    throw lastUnavailableError;
+                }
+                throw cacheErr;
+            }
+        }
+
         continueBtn.addEventListener('click', () => {
             if (pendingRedirectUrl) {
                 window.location.href = pendingRedirectUrl;
@@ -135,17 +168,7 @@
                 setAdminDebug(`projectId: ${projectId}\nissuer: ${tokenInfo.issuer || 'unknown'}\nuid: ${user.uid}\npath: user/${user.uid}\nstep: signed in, checking admin doc from server...`);
 
                 try {
-                    let docSnap;
-                    try {
-                        docSnap = await getDocFromServer(userDocRef);
-                    } catch (serverErr) {
-                        if (serverErr?.code === "unavailable") {
-                            // Fallback read when server fetch fails due transient offline/network issue.
-                            docSnap = await getDoc(userDocRef);
-                        } else {
-                            throw serverErr;
-                        }
-                    }
+                    const docSnap = await getUserDocWithRetry(userDocRef);
                     if (!docSnap.exists()) {
                         await setDoc(userDocRef, {
                             email: user.email || email,
@@ -177,7 +200,7 @@
                     }
                     if (docError?.code === "unavailable") {
                         setAdminDebug(`projectId: ${projectId}\nuid: ${user.uid}\npath: user/${user.uid}\nerrorCode: unavailable\nerrorMessage: Firestore is offline or unreachable.\nredirect: dashboard.html (safe fallback)`);
-                        alert("Signed in. Firestore is temporarily unreachable, so admin/profile checks were skipped. Continuing to dashboard.");
+                        console.warn("Firestore unavailable during login. Continuing as regular user.", docError);
                         isAdmin = false;
                         window.location.href = "dashboard.html";
                         btn.innerText = "Sign In";
