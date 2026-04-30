@@ -91,6 +91,12 @@
             color: #fca5a5;
         }
 
+        .btn-admin-toggle {
+            background: var(--warning);
+            border-color: transparent;
+            color: #000;
+        }
+
         .badge {
             display: inline-flex;
             align-items: center;
@@ -358,6 +364,31 @@
             </section>
 
             <section class="card">
+                <h2>Gift Card Rate Controller</h2>
+                <div class="field-row">
+                    <label class="field" for="amazonRateInput">
+                        <span>Amazon Rate (%)</span>
+                        <input type="number" id="amazonRateInput" step="0.01" min="0" placeholder="e.g. 85">
+                    </label>
+                    <label class="field" for="itunesRateInput">
+                        <span>iTunes Rate (%)</span>
+                        <input type="number" id="itunesRateInput" step="0.01" min="0" placeholder="e.g. 80">
+                    </label>
+                    <label class="field" for="googlePlayRateInput">
+                        <span>Google Play Rate (%)</span>
+                        <input type="number" id="googlePlayRateInput" step="0.01" min="0" placeholder="e.g. 82">
+                    </label>
+                    <label class="field" for="steamRateInput">
+                        <span>Steam Rate (%)</span>
+                        <input type="number" id="steamRateInput" step="0.01" min="0" placeholder="e.g. 78">
+                    </label>
+                    <button type="button" class="btn" id="initGiftRateBtn">Initialize Gift Rates</button>
+                    <button type="button" class="btn btn-primary" id="saveGiftRateBtn">Save Gift Rates</button>
+                </div>
+                <div class="hint">Stored at <span class="mono">settings/giftRates</span> as percentages of card value.</div>
+            </section>
+
+            <section class="card">
                 <h2>User Management</h2>
                 <div class="table-wrap">
                     <table>
@@ -367,7 +398,8 @@
                                 <th>Email</th>
                                 <th>UID</th>
                                 <th>Naira Balance</th>
-                                <th>Action</th>
+                                <th>Admin Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
@@ -450,6 +482,12 @@
         const usdtRateInput = document.getElementById("usdtRateInput");
         const initRateBtn = document.getElementById("initRateBtn");
         const saveRateBtn = document.getElementById("saveRateBtn");
+        const amazonRateInput = document.getElementById("amazonRateInput");
+        const itunesRateInput = document.getElementById("itunesRateInput");
+        const googlePlayRateInput = document.getElementById("googlePlayRateInput");
+        const steamRateInput = document.getElementById("steamRateInput");
+        const initGiftRateBtn = document.getElementById("initGiftRateBtn");
+        const saveGiftRateBtn = document.getElementById("saveGiftRateBtn");
         const usersTableBody = document.getElementById("usersTableBody");
         const tradesTableBody = document.getElementById("tradesTableBody");
         const logoutBtn = document.getElementById("logoutBtn");
@@ -595,9 +633,31 @@
             }
         }
 
+        async function initGiftRates() {
+            initGiftRateBtn.disabled = true;
+            try {
+                const settingsRef = doc(db, "settings", "giftRates");
+                await setDoc(settingsRef, {
+                    amazon: 85,
+                    itunes: 80,
+                    googlePlay: 82,
+                    steam: 78,
+                    updatedAt: serverTimestamp(),
+                    updatedBy: currentAdmin.uid
+                }, { merge: true });
+                await loadGiftRates();
+                showAlert("Gift rates initialized with default values.", "success");
+            } catch (error) {
+                console.error("Failed to initialize gift rates:", error);
+                showAlert(`Failed to initialize gift rates: ${error.message}`, "error");
+            } finally {
+                initGiftRateBtn.disabled = false;
+            }
+        }
+
         function renderUsers() {
             if (!usersCache.length) {
-                usersTableBody.innerHTML = "<tr><td colspan=\"5\">No users found.</td></tr>";
+                usersTableBody.innerHTML = "<tr><td colspan=\"6\">No users found.</td></tr>";
                 return;
             }
 
@@ -605,6 +665,8 @@
                 const email = item.email || "No email";
                 const name = item.fullName || "Unnamed User";
                 const nairaBalance = formatNaira(item.nairaBalance || 0);
+                const adminStatus = item.isAdmin ? "Admin" : "User";
+                const toggleText = item.isAdmin ? "Remove Admin" : "Make Admin";
 
                 return `
                     <tr>
@@ -612,9 +674,13 @@
                         <td>${escapeHtml(email)}</td>
                         <td class="mono">${escapeHtml(item.uid)}</td>
                         <td>${nairaBalance}</td>
+                        <td>${adminStatus}</td>
                         <td>
                             <button type="button" class="btn" data-credit-uid="${escapeHtml(item.uid)}" data-credit-email="${escapeHtml(email)}">
                                 Manual Credit
+                            </button>
+                            <button type="button" class="btn btn-admin-toggle" data-toggle-uid="${escapeHtml(item.uid)}" data-current-admin="${item.isAdmin}">
+                                ${toggleText}
                             </button>
                         </td>
                     </tr>
@@ -622,8 +688,57 @@
             }).join("");
         }
 
-        async function loadUsers() {
-            usersTableBody.innerHTML = "<tr><td colspan=\"5\">Loading users...</td></tr>";
+        async function loadGiftRates() {
+            const settingsRef = doc(db, "settings", "giftRates");
+            const settingsSnap = await getDoc(settingsRef);
+            if (settingsSnap.exists()) {
+                const data = settingsSnap.data();
+                amazonRateInput.value = data.amazon || "";
+                itunesRateInput.value = data.itunes || "";
+                googlePlayRateInput.value = data.googlePlay || "";
+                steamRateInput.value = data.steam || "";
+            } else {
+                amazonRateInput.value = "";
+                itunesRateInput.value = "";
+                googlePlayRateInput.value = "";
+                steamRateInput.value = "";
+            }
+        }
+
+        async function saveGiftRates() {
+            hideAlert();
+            const amazonRate = parseNumber(amazonRateInput.value);
+            const itunesRate = parseNumber(itunesRateInput.value);
+            const googlePlayRate = parseNumber(googlePlayRateInput.value);
+            const steamRate = parseNumber(steamRateInput.value);
+
+            if (amazonRate < 0 || itunesRate < 0 || googlePlayRate < 0 || steamRate < 0) {
+                showAlert("Enter valid rates (0 or greater).", "error");
+                return;
+            }
+
+            saveGiftRateBtn.disabled = true;
+            try {
+                const settingsRef = doc(db, "settings", "giftRates");
+                await setDoc(settingsRef, {
+                    amazon: amazonRate,
+                    itunes: itunesRate,
+                    googlePlay: googlePlayRate,
+                    steam: steamRate,
+                    updatedAt: serverTimestamp(),
+                    updatedBy: currentAdmin.uid
+                }, { merge: true });
+                showAlert(`Gift rates updated successfully.`, "success");
+            } catch (error) {
+                console.error("Failed to save gift rates:", error);
+                showAlert(`Failed to save gift rates: ${error.message}`, "error");
+            } finally {
+                saveGiftRateBtn.disabled = false;
+            }
+        }
+
+        async function initGiftRates() {
+            usersTableBody.innerHTML = "<tr><td colspan=\"6\">Loading users...</td></tr>";
             try {
                 const usersSnap = await getDocs(collection(db, "user"));
                 usersCache = usersSnap.docs.map((snapshot) => {
@@ -632,7 +747,8 @@
                         uid: snapshot.id,
                         fullName: data.fullName || "",
                         email: data.email || "",
-                        nairaBalance: parseNumber(data.nairaBalance || 0)
+                        nairaBalance: parseNumber(data.nairaBalance || 0),
+                        isAdmin: data.isAdmin === true
                     };
                 });
 
@@ -640,7 +756,7 @@
                 renderUsers();
             } catch (error) {
                 console.error("Failed to load users:", error);
-                usersTableBody.innerHTML = `<tr><td colspan=\"5\">Failed to load users: ${escapeHtml(error.message)}</td></tr>`;
+                usersTableBody.innerHTML = `<tr><td colspan=\"6\">Failed to load users: ${escapeHtml(error.message)}</td></tr>`;
             }
         }
 
@@ -890,6 +1006,41 @@
             }
         });
 
+        usersTableBody.addEventListener("click", async (event) => {
+            const button = event.target.closest("button[data-toggle-uid]");
+            if (!button) {
+                return;
+            }
+
+            const uid = button.getAttribute("data-toggle-uid");
+            const currentAdmin = button.getAttribute("data-current-admin") === "true";
+            if (!uid) {
+                return;
+            }
+
+            const newAdminStatus = !currentAdmin;
+            const action = newAdminStatus ? "promote to admin" : "remove admin privileges from";
+            if (!confirm(`Are you sure you want to ${action} this user?`)) {
+                return;
+            }
+
+            button.disabled = true;
+            try {
+                await updateDoc(doc(db, "user", uid), {
+                    isAdmin: newAdminStatus,
+                    updatedBy: currentAdmin.uid,
+                    updatedAt: serverTimestamp()
+                });
+                showAlert(`User ${newAdminStatus ? "promoted to admin" : "removed from admin"} successfully.`, "success");
+                await loadUsers(); // Refresh the list
+            } catch (error) {
+                console.error("Failed to update admin status:", error);
+                showAlert(`Failed to update admin status: ${error.message}`, "error");
+            } finally {
+                button.disabled = false;
+            }
+        });
+
         tradesTableBody.addEventListener("click", async (event) => {
             const button = event.target.closest("button[data-approve-trade]");
             if (!button) {
@@ -915,6 +1066,8 @@
 
         saveRateBtn.addEventListener("click", saveExchangeRate);
         initRateBtn.addEventListener("click", initializeDefaultRates);
+        saveGiftRateBtn.addEventListener("click", saveGiftRates);
+        initGiftRateBtn.addEventListener("click", initGiftRates);
 
         logoutBtn.addEventListener("click", async () => {
             try {
@@ -954,7 +1107,7 @@
                 adminIdentity.textContent = `Signed in as ${user.email || user.uid}`;
                 showOnly("app");
 
-                await Promise.all([loadExchangeRate(), loadUsers(), loadPendingTrades()]);
+                await Promise.all([loadExchangeRate(), loadGiftRates(), loadUsers(), loadPendingTrades()]);
             } catch (error) {
                 console.error("Admin boot failed:", error);
                 lockedText.textContent = "Failed to load admin panel. Check your internet and Firestore rules.";
